@@ -46,6 +46,7 @@
     <Compile Include="payByCoupon.cs" />
     <Compile Include="payByAR.cs" />
     <Compile Include="payByStore.cs" />
+    <Compile Include="payByGift.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
