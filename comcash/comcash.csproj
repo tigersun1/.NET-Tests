@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{C31F2D68-BBD0-45B6-A77F-6AAC02E79E6F}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>comcash</RootNamespace>
+    <AssemblyName>comcash</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Compile Include="Comcash.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="Log_In_Out.cs" />
+    <Compile Include="addCustomer.cs" />
+    <Compile Include="Launch.cs" />
+    <Compile Include="addProduct.cs" />
+    <Compile Include="payByCash.cs" />
+    <Compile Include="acceptPayment.cs" />
+    <Compile Include="Internet.cs" />
+    <Compile Include="Capture.cs" />
+    <Compile Include="addModifiers.cs" />
+    <Compile Include="payByCard.cs" />
+    <Compile Include="Suspend.cs" />
+    <Compile Include="recallSuspend.cs" />
+    <Compile Include="tenderOthers.cs" />
+    <Compile Include="payByCoupon.cs" />
+    <Compile Include="payByAR.cs" />
+    <Compile Include="payByStore.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Presentation" />
+    <Reference Include="System.Windows.Input.Manipulations" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Windows.Forms.DataVisualization.Design" />
+    <Reference Include="UIAutomationTypes" />
+    <Reference Include="UIAutomationClient" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="UIAutomationClientsideProviders" />
+    <Reference Include="Castle.Core">
+      <HintPath>..\packages\Castle.Core.3.3.0\lib\net40-client\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="TestStack.White">
+      <HintPath>..\packages\TestStack.White.0.13.3\lib\net40\TestStack.White.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="TestData.cs" />
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>
