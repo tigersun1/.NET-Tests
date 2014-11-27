@@ -27,6 +27,8 @@ namespace comcash
 				var stopwatch = new Stopwatch();
 				stopwatch.Start();
 				while (stopwatch.ElapsedMilliseconds < 300000) {
+					if (checkResponse())
+						return false;
 					var label = x.Get<TestStack.White.UIItems.Label> (SearchCriteria.ByAutomationId ("ErrorMessageLabel"));
 					if (label.Name == "" | label.Name.StartsWith("Operation is"))
 						continue;

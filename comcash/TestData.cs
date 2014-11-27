@@ -16,19 +16,32 @@ using TestStack.White.UIItems.Finders;
 using TestStack.White.UIItems.TreeItems;
 using TestStack.White.UIItems.WindowStripControls;
 using System.Collections.Generic;
+using System.Net;
+using Fiddler;
 
 namespace comcash
 {
     partial class TestData
 	{
 
-		private bool Fail = false; 
-		public int Errors = 0;
-		private bool isKilled = false;
+		private bool Fail; 
+		public int Errors;
+		private bool isKilled;
 
-		private static string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-		private string TestCasesPath = desktopPath + @"\TestSuits POS";
-		string appPath = desktopPath + @"\1\Comcash POS Application.exe";
+		private static string desktopPath;
+		private string TestCasesPath;
+		string appPath;
+
+		public TestData(){
+			Fail = false;
+			Errors = 0;
+			isKilled = false;
+			desktopPath = Environment.GetFolderPath (Environment.SpecialFolder.Desktop);
+			TestCasesPath = desktopPath + @"\TestSuits POS";
+			appPath = desktopPath + @"\1\Comcash POS Application.exe";
+		}
+
+
 
 		public void setKilled(bool n){
 			isKilled = n;
@@ -41,7 +54,7 @@ namespace comcash
 		public void SetFail (bool x)
 		{
 			Fail = x;
-			if (!Fail) {
+			if (Fail) {
 				Errors++;
 				Capture ();
 			}
@@ -106,7 +119,10 @@ namespace comcash
 			string[] line = File.ReadAllLines (Path);
 			return line;
 		}
+			
+		}
 
 }
-}
+
+
 

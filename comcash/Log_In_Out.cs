@@ -32,6 +32,8 @@ namespace comcash
 				var stopwatch = new Stopwatch();
 				stopwatch.Start();
 				while (stopwatch.ElapsedMilliseconds < 300000){
+					if (checkResponse())
+						return comcash;
 					List<Window> list = comcash.GetWindows();
 					if(list.Exists(obj=>obj.Id.StartsWith("Window"))){ 
 						if(fail == true){

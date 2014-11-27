@@ -46,7 +46,7 @@ namespace comcash
 				tenderOthers(win, value);
 
 				var tenderOtherWin = win.MdiChild(SearchCriteria.ByText("TenderOtherWindow"));
-				var button = tenderOtherWin.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByText("Coupon"));
+				var button = tenderOtherWin.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByText("Gift Card"));
 				button.Click();
 				Thread.Sleep(500);
 
@@ -65,6 +65,8 @@ namespace comcash
 						return comcash;
 					}
 				}
+
+				Thread.Sleep(1000);
 
 				if (!errLable.IsOffScreen){
 					AcceptPayment(win);

@@ -29,7 +29,6 @@ class Start
 		TestData newTest = new TestData ();
 		newTest.Logger ("<td>Test Execution Started</td></tr>");
 
-
 		//Counting Test Cases
 		string[] TestCases = newTest.GetTestCases ();
 		if (TestCases.Length == 0) {
@@ -52,10 +51,10 @@ class Start
 
 			if (newTest.getKilled()) {
 				app = newTest.Launch ();
-				newTest.setKilled (false);
+				newTest.setKilled (true);
 				if (newTest.GetFail ()) {
 					app.Close ();
-					newTest.setKilled (true);
+				    newTest.setKilled (true);
 					break;
 				}
 			}
@@ -109,7 +108,7 @@ class Start
 					continue;
 				} else if (valueTestCases [x].Contains ("payar")) {
 					string value = newTest.GetArgument (valueTestCases [x]);
-					app = newTest.payByCoupon (app, value);
+					app = newTest.payByAR (app, value);
 					continue;
 				} else if (valueTestCases [x].Contains ("paystore")) {
 					string value = newTest.GetArgument (valueTestCases [x]);

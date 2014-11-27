@@ -61,6 +61,8 @@ namespace comcash
 				var stopwatch = new Stopwatch();
 				stopwatch.Start();
 				while(!childWin.IsOffScreen){
+					if(checkResponse())
+						return comcash;
 					if (stopwatch.ElapsedMilliseconds > 300000){
 						Logger("<td><font color=\"red\">ERROR: POS can't accept card payment</font></td></tr>");
 						SetFail(true);

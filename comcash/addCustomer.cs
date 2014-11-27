@@ -40,6 +40,7 @@ namespace comcash
 				}
 
 				CustButton.Click ();
+			
 				Thread.Sleep (1000);
 
 				var searchField = win.Get<TestStack.White.UIItems.TextBox> (SearchCriteria.ByAutomationId ("SearchCustomerTextBox"));
@@ -52,6 +53,8 @@ namespace comcash
 				var stopwatch = new Stopwatch();
 				stopwatch.Start();
 				for (int i = 0; ; i++) {
+					if (checkResponse())
+						return comcash;
 					var errlabel = win.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId("ErrorMessageLabel"));
 					if (stopwatch.ElapsedMilliseconds > 300000){
 						Logger("<td><font color=\"red\">ERROR: server doesn't return customer list</font></td></tr>");
@@ -83,6 +86,7 @@ namespace comcash
 				InvokePattern patt = (InvokePattern)continueButton.GetCurrentPattern (InvokePattern.Pattern);
 				patt.Invoke ();
 				Thread.Sleep(1000);
+				checkResponse();
 				return comcash;
 			}
 

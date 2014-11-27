@@ -36,6 +36,8 @@ namespace comcash
 				var stopWatch = new Stopwatch();
 				stopWatch.Start();
 				while(stopWatch.ElapsedMilliseconds < 300000){
+					if (checkResponse())
+						return comcash;
 					if(mySuspendedButton.Enabled)
 						break;
 					if(stopWatch.ElapsedMilliseconds > 250000){
@@ -51,10 +53,7 @@ namespace comcash
 				sel.Select();
 
 				if (value.Contains("void")){
-
-					//var voidButton = item.FindFirst(TreeScope.Descendants, new PropertyCondition(AutomationElement.NameProperty, "Void"));
-					//InvokePattern cl = voidButton.GetCurrentPattern(InvokePattern.Pattern) as InvokePattern;
-					//cl.Invoke();
+				
 					var voidButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId("VoidSuspendButton"));
 					Thread.Sleep(500);
 					voidButton.Click();
