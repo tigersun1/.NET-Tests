@@ -31,7 +31,7 @@ namespace comcash
 				var tenderOtherWin = win.MdiChild(SearchCriteria.ByText("TenderOtherWindow"));
 				var button = tenderOtherWin.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByText("Accounts Receivable"));
 				button.Click();
-				Thread.Sleep(500);
+				Thread.Sleep(600);
 
 				var dueLabel = win.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId("BalanceDueLabel"));
 				double amount = double.Parse(dueLabel.Name);
