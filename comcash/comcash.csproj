@@ -48,6 +48,10 @@
     <Compile Include="payByStore.cs" />
     <Compile Include="payByGift.cs" />
     <Compile Include="checkResponse.cs" />
+    <Compile Include="AddQTY.cs" />
+    <Compile Include="Return.cs" />
+    <Compile Include="acceptReturn.cs" />
+    <Compile Include="ReturnProd.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -107,9 +111,6 @@
     </Reference>
     <Reference Include="Zlib.Portable">
       <HintPath>..\packages\Zlib.Portable.1.10.0\lib\portable-net4+sl5+wp8+win8+wpa81+MonoTouch+MonoAndroid\Zlib.Portable.dll</HintPath>
-    </Reference>
-    <Reference Include="FiddlerCore4">
-      <HintPath>..\packages\FiddlerCore.4.4.8.4\lib\net40\FiddlerCore4.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -94,6 +94,8 @@ namespace comcash
 				var stopwatch = new Stopwatch();
 				stopwatch.Start();
 				for ( int x = 0; stopwatch.ElapsedMilliseconds < 60000; x++){
+					if (checkResponse())
+						return comcash;
 					List<Window> list = comcash.GetWindows();
 					if(list.Exists(obj=>obj.Id.StartsWith("PINWindow")))
 						return comcash;

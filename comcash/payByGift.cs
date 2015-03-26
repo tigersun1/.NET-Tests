@@ -77,8 +77,8 @@ namespace comcash
 				if (amount > 0)
 					return comcash;
 
-				var yesBut = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId("ButtonYES"));
-				yesBut.Click();
+				var noReceiptButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId("NoReceiptButton"));
+				noReceiptButton.Click();
 				Thread.Sleep(1000);
 				AcceptPayment(win);
 

@@ -24,11 +24,12 @@ namespace comcash
 		public void Internet(string st)
 		{
 			System.Diagnostics.ProcessStartInfo InOff = new System.Diagnostics.ProcessStartInfo ("netsh", "wlan disconnect");
-			System.Diagnostics.ProcessStartInfo InOn = new System.Diagnostics.ProcessStartInfo ("netsh", "wlan connect name = MD");
+			System.Diagnostics.ProcessStartInfo InOn = new System.Diagnostics.ProcessStartInfo ("netsh", "wlan connect name = " + connectionName);
 			System.Diagnostics.Process p = new System.Diagnostics.Process ();
 
 			if (st.StartsWith ("off") && PingInternet ()) {
 				p.StartInfo = InOff;
+				Thread.Sleep (1000);
 				p.Start ();
 				Thread.Sleep (1000);
 				if (PingInternet ()) {
@@ -40,7 +41,7 @@ namespace comcash
 			} else if (st.StartsWith ("on") && !PingInternet ()) {
 				p.StartInfo = InOn;
 				p.Start ();
-				Thread.Sleep (1000);
+				Thread.Sleep (5000);
 				if (!PingInternet ()) {
 					SetFail (true);
 					Logger ("<td><font color=\"red\">ERROR: can't switch on the Internet</font></td></tr>");

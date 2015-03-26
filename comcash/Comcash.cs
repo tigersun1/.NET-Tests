@@ -74,7 +74,20 @@ class Start
 					break;
 				} else if (valueTestCases [x].StartsWith ("//") | valueTestCases [x].ToString () == "")
 					continue;
-				else if (valueTestCases [x].Contains ("login")) {
+				else if (valueTestCases [x].StartsWith ("replay")) {
+					string arg = newTest.GetArgument (valueTestCases [x]);
+					int val = int.Parse (arg);
+					newTest.setReplay (val);
+					newTest.setReplayPoint (x);
+					continue;
+				} else if (valueTestCases [x].StartsWith ("endreplay")) {
+					newTest.setReplay (newTest.getReplay () - 1);
+					if (newTest.getReplay () > 0) {
+						x = newTest.getReplayPoint ();
+						continue;
+					} else
+						continue;
+				} else if (valueTestCases [x].Contains ("login")) {
 					string pass = newTest.GetArgument (valueTestCases [x]);
 					if (pass == "") {
 						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
@@ -114,7 +127,7 @@ class Start
 					string value = newTest.GetArgument (valueTestCases [x]);
 					app = newTest.payByCoupon (app, value);
 					continue;
-				}else if (valueTestCases[x].Contains("paygift")){
+				} else if (valueTestCases [x].Contains ("paygift")) {
 					string value = newTest.GetArgument (valueTestCases [x]);
 					app = newTest.payByGift (app, value);
 					continue;
@@ -147,6 +160,19 @@ class Start
 					continue;
 				} else if (valueTestCases [x].Contains ("suspend")) {
 					app = newTest.Suspend (app);
+					continue;
+				} else if (valueTestCases [x].Contains ("qty")) {
+					string mod = newTest.GetArgument (valueTestCases [x]);
+					if (mod == "") {
+						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
+						newTest.SetFail (true);
+						continue;
+					}
+					app = newTest.AddQTY (app, mod);
+					continue;
+				} else if (valueTestCases [x].Contains ("return")) {
+					string ar = newTest.GetArgument (valueTestCases [x]);
+					app = newTest.Return (app, ar);
 					continue;
 				} else if (valueTestCases [x].Contains ("recall")) {
 					string arg = newTest.GetArgument (valueTestCases [x]);

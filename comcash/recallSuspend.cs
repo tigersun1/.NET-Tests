@@ -32,7 +32,7 @@ namespace comcash
 				suspendedButton.Click();
 				Thread.Sleep(1000);
 
-				var mySuspendedButton = win.Get<TestStack.White.UIItems.RadioButton>(SearchCriteria.ByAutomationId("MySuspendsButton"));
+				var mySuspendedButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId("SearchSuspendsButton"));
 				var stopWatch = new Stopwatch();
 				stopWatch.Start();
 				while(stopWatch.ElapsedMilliseconds < 300000){

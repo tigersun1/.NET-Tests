@@ -21,32 +21,21 @@ namespace comcash
 {
 	partial class TestData
 	{
-		public TestStack.White.Application payByStore (TestStack.White.Application comcash, string str)
+		public TestStack.White.Application acceptReturn (TestStack.White.Application comcash)
 		{
+			Window win = comcash.GetWindow(SearchCriteria.ByAutomationId("Window"), TestStack.White.Factory.InitializeOption.NoCache);
+
 			try{
-				Window win = comcash.GetWindow(SearchCriteria.ByAutomationId("Window"), TestStack.White.Factory.InitializeOption.NoCache);
 
-				tenderOthers (win, str);
-
-				var tenderOtherWin = win.MdiChild(SearchCriteria.ByText("TenderOtherWindow"));
-				var button = tenderOtherWin.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByText("Store Credit"));
-				button.Click();
+				var continueButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId("ContinueButton"));
 				Thread.Sleep(500);
-
-				var dueLabel = win.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId("BalanceDueLabel"));
-				double amount = double.Parse(dueLabel.Name);
-				if (amount > 0)
-					return comcash;
-
-				var noReceiptButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId("NoReceiptButton"));
-				noReceiptButton.Click();
+				continueButton.Click();
 				Thread.Sleep(1000);
 
 				AcceptPayment(win);
 
 				return comcash;
 			}
-
 			catch (Exception e){
 				Logger ("<td><font color=\"red\">ERROR: " + e + "</font></td></tr>");
 				SetFail (true);

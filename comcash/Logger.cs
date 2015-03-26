@@ -6,9 +6,6 @@ namespace comcash
 {
 	partial class TestData
 	{
-		static string partPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "TestLog-" + DateTime.Now.ToString("D") );
-		private string LogPath = System.IO.Path.Combine(partPath, "testlogfile.html");
-
 
 		public void Logger(string Message)
 		{

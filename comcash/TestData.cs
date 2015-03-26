@@ -17,7 +17,7 @@ using TestStack.White.UIItems.TreeItems;
 using TestStack.White.UIItems.WindowStripControls;
 using System.Collections.Generic;
 using System.Net;
-using Fiddler;
+
 
 namespace comcash
 {
@@ -30,18 +30,69 @@ namespace comcash
 
 		private static string desktopPath;
 		private string TestCasesPath;
+		private string folderPath;
+		private string connectionName;
+		static string partPath;
+		private string LogPath;
 		string appPath;
+		private int Replay;
+		private int replayPoint;
 
 		public TestData(){
 			Fail = false;
 			Errors = 0;
 			isKilled = false;
+			Replay = 0;
+
 			desktopPath = Environment.GetFolderPath (Environment.SpecialFolder.Desktop);
-			TestCasesPath = desktopPath + @"\TestSuits POS";
-			appPath = desktopPath + @"\1\Comcash POS Application.exe";
+			folderPath = Path.GetDirectoryName (Assembly.GetEntryAssembly ().Location);
+			appPath = folderPath + @"\Comcash POS Application.exe";
+
+			if (File.Exists (folderPath + @"\testconfig.txt")) {
+				string[] lines = File.ReadAllLines (folderPath + @"\testconfig.txt");
+				foreach (string s in lines) {
+					if (s.ToLower ().StartsWith ("connection")) {
+						string x = s.Substring (s.LastIndexOf (':') + 1);
+						x = x.Trim ();
+						connectionName = x;
+					} else if (s.ToLower ().StartsWith ("log")) {
+						string x = s.Substring (s.IndexOf (':') + 1);
+						x = x.Trim ();
+						partPath = System.IO.Path.Combine(x, "TestLog-" + DateTime.Now.ToString ("D"));
+					} else if (s.ToLower ().StartsWith ("cases")) {
+						string x = s.Substring (s.IndexOf (':') + 1);
+						x = x.Trim ();
+						TestCasesPath = System.IO.Path.Combine( x.Substring(x.IndexOf('C'), x.LastIndexOf('\\')), x.Substring(x.LastIndexOf('\\') +1) );
+					}
+				}
+			} 
+
+			if (TestCasesPath == null)
+				TestCasesPath = desktopPath + @"\TestSuits POS";
+			if (partPath == null)	
+				partPath = System.IO.Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.Desktop), "TestLog-" + DateTime.Now.ToString ("D"));
+			if (connectionName == null)	
+				connectionName = "MD";
+
+			LogPath = System.IO.Path.Combine(partPath, "testlogfile.html");
 		}
 
 
+		public int getReplayPoint(){
+			return replayPoint;
+		}
+
+		public void setReplayPoint (int val){
+			replayPoint = val;
+		}
+
+		public int getReplay(){
+			return Replay;
+		}
+
+		public void setReplay(int arg){
+			Replay = arg;
+		}
 
 		public void setKilled(bool n){
 			isKilled = n;
