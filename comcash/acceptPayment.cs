@@ -45,6 +45,7 @@ namespace comcash
 				}
 				return false;
 			}
+
 			catch (Exception e){
 				Logger ("<td><font color=\"red\">ERROR: " + e + "</font></td></tr>");
 				SetFail (true);

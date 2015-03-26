@@ -44,7 +44,7 @@ class Start
 			newTest.setKilled (true);
 		}
 
-		//Parsing Test Cases and perform them
+		//Parsing Test Cases and perform them 
 		for (int i = 0; i < TestCases.Length; i++) {
 
 			string[] valueTestCases = newTest.ParseTS (TestCases [i]);
