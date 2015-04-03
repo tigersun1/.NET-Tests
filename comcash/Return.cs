@@ -41,8 +41,8 @@ namespace comcash
 				var stopWatch = new Stopwatch();
 				stopWatch.Start();
 				while(stopWatch.ElapsedMilliseconds < 300000){
-					if (checkResponse())
-						return comcash;
+					//if (checkResponse())
+					//	return comcash;
 					if (ListBox.Enabled)
 						break;
 					if(stopWatch.ElapsedMilliseconds > 250000){
@@ -78,8 +78,8 @@ namespace comcash
 					stopwatch.Start();
 					while (stopwatch.ElapsedMilliseconds < 300000) {
 
-						if (checkResponse())
-							return comcash;
+					//	if (checkResponse())
+					//		return comcash;
 						var label = win.Get<TestStack.White.UIItems.Label> (SearchCriteria.ByAutomationId ("ErrorMessageLabel"));
 						if (label.Name == "")
 							break;

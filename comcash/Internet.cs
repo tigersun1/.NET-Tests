@@ -1,21 +1,6 @@
 ﻿using System;
-using System.Windows;
-using System.Windows.Automation;
-using System.Windows.Forms;
-using System.Diagnostics;
-using System.ComponentModel;
-using System.Reflection;
 using System.Threading;
-using System.IO; 
-using TestStack;
-using TestStack.White.Recording;
-using TestStack.White.UIItems.WindowItems;
-using TestStack.White.UIItems;
-using TestStack.White.UIItems.MenuItems;
-using TestStack.White.UIItems.Finders;
-using TestStack.White.UIItems.TreeItems;
-using TestStack.White.UIItems.WindowStripControls;
-using System.Collections.Generic;
+
 
 namespace comcash
 {
@@ -23,30 +8,13 @@ namespace comcash
 	{
 		public void Internet(string st)
 		{
-			System.Diagnostics.ProcessStartInfo InOff = new System.Diagnostics.ProcessStartInfo ("netsh", "wlan disconnect");
-			System.Diagnostics.ProcessStartInfo InOn = new System.Diagnostics.ProcessStartInfo ("netsh", "wlan connect name = " + connectionName);
-			System.Diagnostics.Process p = new System.Diagnostics.Process ();
 
-			if (st.StartsWith ("off") && PingInternet ()) {
-				p.StartInfo = InOff;
-				Thread.Sleep (1000);
-				p.Start ();
-				Thread.Sleep (1000);
-				if (PingInternet ()) {
-					SetFail (true);
-					Logger ("<td><font color=\"red\">ERROR: can't switch off the Internet</font></td></tr>");
-				}
-				Thread.Sleep (1000);
-
-			} else if (st.StartsWith ("on") && !PingInternet ()) {
-				p.StartInfo = InOn;
-				p.Start ();
-				Thread.Sleep (5000);
-				if (!PingInternet ()) {
-					SetFail (true);
-					Logger ("<td><font color=\"red\">ERROR: can't switch on the Internet</font></td></tr>");
-				}
-				Thread.Sleep (1000);
+			if (st.StartsWith ("on") && !connectStatus) {
+				Fiddler ("on");
+				connectStatus = true;
+			} else if (st.StartsWith ("off") && connectStatus) {
+				Fiddler ("off");
+				connectStatus = false;
 			}
 		}
 
@@ -54,8 +22,16 @@ namespace comcash
 		public bool PingInternet()
 		{
 			try{
-				return System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable();
+				
+				var ping = new System.Net.NetworkInformation.Ping();
+
+				var result = ping.Send(serverName);
+				if (result.Status == System.Net.NetworkInformation.IPStatus.Success)
+					return true;
+				else
+					return false;
 			}
+
 			catch (Exception e){
 				Logger (e.Message);
 				return false;

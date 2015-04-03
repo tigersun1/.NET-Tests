@@ -21,7 +21,7 @@ namespace comcash
 	{
 		public TestStack.White.Application AddCustomer( TestStack.White.Application comcash, string customer){
 
-			if (!PingInternet ()) {
+			if (!connectStatus || !PingInternet()) {
 				Logger("<td><font color=\"red\">ERROR: Can't add customer, no internet connection</font></td></tr>");
 				SetFail (true);
 				return comcash;
@@ -53,8 +53,6 @@ namespace comcash
 				var stopwatch = new Stopwatch();
 				stopwatch.Start();
 				for (int i = 0; ; i++) {
-					if (checkResponse())
-						return comcash;
 					var errlabel = win.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId("ErrorMessageLabel"));
 					if (stopwatch.ElapsedMilliseconds > 300000){
 						Logger("<td><font color=\"red\">ERROR: server doesn't return customer list</font></td></tr>");
@@ -66,6 +64,9 @@ namespace comcash
 					else 
 						break;
 				}
+
+				if (!checkResponse("customers"))
+					return comcash;
 
 				var label = win.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId("CustomerNotFoundLabel"));
 				if (!label.IsOffScreen){
@@ -86,7 +87,7 @@ namespace comcash
 				InvokePattern patt = (InvokePattern)continueButton.GetCurrentPattern (InvokePattern.Pattern);
 				patt.Invoke ();
 				Thread.Sleep(1000);
-				checkResponse();
+				checkResponse("customer/loyaltyproducts");
 				return comcash;
 			}
 

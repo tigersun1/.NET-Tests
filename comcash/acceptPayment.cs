@@ -27,8 +27,6 @@ namespace comcash
 				var stopwatch = new Stopwatch();
 				stopwatch.Start();
 				while (stopwatch.ElapsedMilliseconds < 300000) {
-					if (checkResponse())
-						return false;
 					var label = x.Get<TestStack.White.UIItems.Label> (SearchCriteria.ByAutomationId ("ErrorMessageLabel"));
 					if (label.Name == "" | label.Name.StartsWith("Operation is"))
 						continue;
@@ -36,10 +34,12 @@ namespace comcash
 						var okButt = x.Get<TestStack.White.UIItems.Button> (SearchCriteria.ByAutomationId ("CloseMessageButton"));
 						okButt.Click ();
 						Thread.Sleep (1000);
+						checkResponse("sale");
 						return true;
 					} else {
 						Logger("<td><font color=\"red\">ERROR: " + label.Name.ToString() + "</font></td></tr>");
 						SetFail(true);
+						checkResponse("sale");
 						return false;
 					}
 				}

@@ -26,56 +26,85 @@ namespace comcash
 
 		private bool Fail; 
 		public int Errors;
+		public int SessionErrors;
 		private bool isKilled;
 
-		private static string desktopPath;
 		private string TestCasesPath;
 		private string folderPath;
-		private string connectionName;
 		static string partPath;
 		private string LogPath;
+		private string FiddlerPath = @"C:\Program Files (x86)\Fiddler2";
+		private string listenerPath;
+		private string serverName;
 		string appPath;
 		private int Replay;
 		private int replayPoint;
+		private bool connectStatus;
 
 		public TestData(){
 			Fail = false;
 			Errors = 0;
+			SessionErrors = 0;
 			isKilled = false;
+			connectStatus = true;
 			Replay = 0;
 
-			desktopPath = Environment.GetFolderPath (Environment.SpecialFolder.Desktop);
 			folderPath = Path.GetDirectoryName (Assembly.GetEntryAssembly ().Location);
+			listenerPath = folderPath + @"\listener.txt";
 			appPath = folderPath + @"\Comcash POS Application.exe";
 
-			if (File.Exists (folderPath + @"\testconfig.txt")) {
-				string[] lines = File.ReadAllLines (folderPath + @"\testconfig.txt");
-				foreach (string s in lines) {
-					if (s.ToLower ().StartsWith ("connection")) {
-						string x = s.Substring (s.LastIndexOf (':') + 1);
-						x = x.Trim ();
-						connectionName = x;
-					} else if (s.ToLower ().StartsWith ("log")) {
-						string x = s.Substring (s.IndexOf (':') + 1);
-						x = x.Trim ();
-						partPath = System.IO.Path.Combine(x, "TestLog-" + DateTime.Now.ToString ("D"));
-					} else if (s.ToLower ().StartsWith ("cases")) {
-						string x = s.Substring (s.IndexOf (':') + 1);
-						x = x.Trim ();
-						TestCasesPath = System.IO.Path.Combine( x.Substring(x.IndexOf('C'), x.LastIndexOf('\\')), x.Substring(x.LastIndexOf('\\') +1) );
+//test config settings
+
+			if (!File.Exists (folderPath + @"\testconfig.txt")){
+				var write = new StreamWriter (folderPath + @"\testconfig.txt", true);
+				write.WriteLine ("Log path: " + folderPath);
+				write.WriteLine ("Cases path: ");
+				write.WriteLine ("Fiddler path: " + FiddlerPath);
+				write.WriteLine ("Server name: ");
+				write.Close();
+			} 
+
+			string[] lines = File.ReadAllLines (folderPath + @"\testconfig.txt");
+			foreach (string s in lines) {
+				if (s.ToLower ().StartsWith ("log")) {
+					string x = s.Substring (s.IndexOf (':') + 1);
+					x = x.Trim ();
+					if (String.IsNullOrEmpty (x))
+						x = folderPath;
+					partPath = Path.Combine (x, "Testlog-" + DateTime.Now.ToString("d"));
+					LogPath = Path.Combine(partPath, "Testlog.html");
+				} else if (s.ToLower ().StartsWith ("cases")) {
+					string x = s.Substring (s.IndexOf (':') + 1);
+					x = x.Trim ();
+					if (String.IsNullOrEmpty (x)) {
+						messBox ("ERROR: No test cases path in the config file");
+						Environment.Exit (1);
+					} else
+						TestCasesPath = x;
+				} else if (s.ToLower ().StartsWith ("fiddler")) {
+					string x = s.Substring (s.LastIndexOf (':') + 1);
+					x = x.Trim ();
+					if (!String.IsNullOrEmpty (x))
+						FiddlerPath = x;
+				} else if (s.ToLower ().StartsWith ("server")) {
+					string x = s.Substring (s.LastIndexOf (':') + 1);
+					x = x.Trim ();
+					if (String.IsNullOrEmpty (x)) {
+						messBox ("ERROR: No server name in config file");
+						Environment.Exit (1);
+					} else
+						serverName = x;
+					if (!PingInternet()) {
+						messBox ("ERROR: Server is not available or incorrect server name in config");
+						Environment.Exit (1);
 					}
 				}
 			} 
-
-			if (TestCasesPath == null)
-				TestCasesPath = desktopPath + @"\TestSuits POS";
-			if (partPath == null)	
-				partPath = System.IO.Path.Combine (Environment.GetFolderPath (Environment.SpecialFolder.Desktop), "TestLog-" + DateTime.Now.ToString ("D"));
-			if (connectionName == null)	
-				connectionName = "MD";
-
-			LogPath = System.IO.Path.Combine(partPath, "testlogfile.html");
+				
+			Fiddler ("\"launch " + listenerPath + " " + serverName + " " + partPath +"\"");
 		}
+
+//test config settings END
 
 
 		public int getReplayPoint(){
@@ -160,8 +189,14 @@ namespace comcash
 
 		public string[] GetTestCases()
 		{
+			if (!Directory.Exists(TestCasesPath)) {
+				messBox("ERROR: Incorrect test cases path");
+				System.Environment.Exit(1);
+			}
+
 			string[] x = Directory.GetFiles (TestCasesPath, "*.txt", SearchOption.AllDirectories);
 			return x;
+
 		}
 
 

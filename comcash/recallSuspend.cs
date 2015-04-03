@@ -36,11 +36,12 @@ namespace comcash
 				var stopWatch = new Stopwatch();
 				stopWatch.Start();
 				while(stopWatch.ElapsedMilliseconds < 300000){
-					if (checkResponse())
-						return comcash;
-					if(mySuspendedButton.Enabled)
+					if(mySuspendedButton.Enabled){
+						checkResponse("sale");
 						break;
+					}
 					if(stopWatch.ElapsedMilliseconds > 250000){
+						checkResponse("sale");
 						Logger("<td><font color=\"red\">ERROR: Can't get suspended list</font></td></tr>");
 						SetFail(true);
 						return comcash;

@@ -25,16 +25,21 @@ class Start
 
 	static void Main()
 	{
-		//Parsing Test Cases
-		TestData newTest = new TestData ();
-		newTest.Logger ("<td>Test Execution Started</td></tr>");
+		//Initialization TestData
+		var newTest = new TestData ();
+		newTest.PingInternet ();
+		if (!newTest.messBox ("Start Test Execution?")) 
+			return;
 
 		//Counting Test Cases
 		string[] TestCases = newTest.GetTestCases ();
 		if (TestCases.Length == 0) {
+			newTest.messBox ("ERROR: Can't find Test Cases");
 			newTest.Logger ("<td><font color=\"red\">ERROR: Can't find Test Cases</font></td></tr>");
-			return;
+			System.Environment.Exit(1);
 		}
+
+		newTest.Logger ("<td>Test Execution Started</td></tr>");
 
 		//app initialization
 		TestStack.White.Application app;
@@ -178,6 +183,10 @@ class Start
 					string arg = newTest.GetArgument (valueTestCases [x]);
 					app = newTest.recallSuspend (app, arg);
 					continue;
+				} else if (valueTestCases [x].Contains ("checkresp")) {
+					string ar = newTest.GetArgument (valueTestCases [x]);
+					newTest.checkResponse (ar);
+					continue;
 				}
 					
 
@@ -191,6 +200,8 @@ class Start
 			Thread.Sleep (1000);
 			}
 		newTest.Logger ("<td><font color=\"red\">Errors: " + newTest.Errors + "</font></td></tr>");
+	    newTest.messBox ("Test Execution end \rErrors: " + newTest.Errors);
+
 		}
 
 	}

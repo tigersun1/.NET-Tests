@@ -32,8 +32,6 @@ namespace comcash
 				var stopwatch = new Stopwatch();
 				stopwatch.Start();
 				while (stopwatch.ElapsedMilliseconds < 300000){
-					if (checkResponse())
-						return comcash;
 					List<Window> list = comcash.GetWindows();
 					if(list.Exists(obj=>obj.Id.StartsWith("Window"))){ 
 						if(fail == true){
@@ -41,8 +39,10 @@ namespace comcash
 							Logger("<td><font color=\"red\">ERROR: User can LogIn with incorrect pin</font></td></tr>");
 							return comcash;
 						}
-						else
+						else{
+							checkResponse("authorization/login");
 							return comcash;
+						}
 					}
 
 					var c = pinWindow.Exists(SearchCriteria.ByAutomationId("ErrorMessageLabel"));
@@ -94,11 +94,11 @@ namespace comcash
 				var stopwatch = new Stopwatch();
 				stopwatch.Start();
 				for ( int x = 0; stopwatch.ElapsedMilliseconds < 60000; x++){
-					if (checkResponse())
-						return comcash;
 					List<Window> list = comcash.GetWindows();
-					if(list.Exists(obj=>obj.Id.StartsWith("PINWindow")))
+					if(list.Exists(obj=>obj.Id.StartsWith("PINWindow"))){
+						checkResponse("authorization/logout");
 						return comcash;
+					}
 				}
 
 				Logger("<td><font color=\"red\">ERROR: Can't LogOut</font></td></tr>");

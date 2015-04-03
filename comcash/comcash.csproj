@@ -52,6 +52,8 @@
     <Compile Include="Return.cs" />
     <Compile Include="acceptReturn.cs" />
     <Compile Include="ReturnProd.cs" />
+    <Compile Include="MessageBox.cs" />
+    <Compile Include="FiddlerCommands.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

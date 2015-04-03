@@ -21,10 +21,10 @@ namespace comcash
 {
 	partial class TestData
 	{
-		public TestStack.White.Application ReturnProd (TestStack.White.Application comcash, string args)
-		{
+		//public TestStack.White.Application ReturnProd (TestStack.White.Application comcash, string args)
+		//{
 
-		}
+		//}
 	}
 }
 

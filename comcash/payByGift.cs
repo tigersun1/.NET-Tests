@@ -73,7 +73,9 @@ namespace comcash
 				}
 
 				var dueLabel = win.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId("BalanceDueLabel"));
-				double amount = double.Parse(dueLabel.Name);
+				string due = dueLabel.Name;
+				due = due.Remove(0,1);
+				double amount = double.Parse(due);
 				if (amount > 0)
 					return comcash;
 

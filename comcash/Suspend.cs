@@ -29,8 +29,8 @@ namespace comcash
 				var suspendButton = win.Get<TestStack.White.UIItems.Button> (SearchCriteria.ByAutomationId ("SuspendButton"));
 				var totalLabel = win.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId("SubTotalLabel"));
 				var balanceLabel = win.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId("BalanceDueLabel"));
-				double total = double.Parse(totalLabel.Text);
-				double balance = double.Parse(balanceLabel.Text);
+				double total = double.Parse(totalLabel.Text.Remove(0,1));
+				double balance = double.Parse(balanceLabel.Text.Remove(0,1));
 				Thread.Sleep (500);
 				suspendButton.Click ();
 				Thread.Sleep(1000);

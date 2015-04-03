@@ -27,7 +27,7 @@ namespace comcash
 
 			try{
 
-				if (!PingInternet()){
+				if (!PingInternet() || !connectStatus){
 					Logger("<td><font color=\"red\">ERROR: Can't pay by card, no internet connection</font></td></tr>");
 					SetFail(true);
 					return comcash;
@@ -39,7 +39,9 @@ namespace comcash
 
 				if (!value.Equals("")){
 					double cardCash = double.Parse(value);
-					double actCash = double.Parse (win.Get<TestStack.White.UIItems.Label> (SearchCriteria.ByAutomationId ("BalanceDueLabel")).Name);
+					string x = (win.Get<TestStack.White.UIItems.Label> (SearchCriteria.ByAutomationId ("BalanceDueLabel")).Name);
+					x = x.Remove(0,1);
+					double actCash = double.Parse(x); 
 					if (cardCash > actCash){
 						Logger("<td><font color=\"red\">ERROR: Card amount more than balance amount</font></td></tr>");
 						SetFail(true);
@@ -61,8 +63,6 @@ namespace comcash
 				var stopwatch = new Stopwatch();
 				stopwatch.Start();
 				while(!childWin.IsOffScreen){
-					if(checkResponse())
-						return comcash;
 					if (stopwatch.ElapsedMilliseconds > 300000){
 						Logger("<td><font color=\"red\">ERROR: POS can't accept card payment</font></td></tr>");
 						SetFail(true);
@@ -71,11 +71,17 @@ namespace comcash
 				}
 
 				var dueLabel = win.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId("BalanceDueLabel"));
-				double amount = double.Parse(dueLabel.Name);
+				string due = dueLabel.Name;
+				due = due.Remove(0,1);
+				double amount = double.Parse(due);
 				if (amount > 0)
 					return comcash;
 
+
+				var noReceiptButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId("NoReceiptButton"));
+				noReceiptButton.Click();
 				Thread.Sleep(1000);
+
 				AcceptPayment(win);
 
 				return comcash;

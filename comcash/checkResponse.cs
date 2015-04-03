@@ -5,37 +5,44 @@ namespace comcash
 {
 	partial class TestData
 	{
-		public bool checkResponse ()
+		//Returns true if checked session is OK, false if error in session
+		public bool checkResponse (string arg)
 		{
-			if (File.Exists (partPath + "\\validError.txt")) {
-				SetFail (true);
-				Logger ("<td><font color=\"red\">ERROR: Server validation error</font></td></tr>");
-				var body = File.ReadAllLines (partPath + "\\validError.txt");
-				string data = "";;
-				foreach (string elem in body)
-					data += elem;
-				Logger ("<td>" + data + "</td></tr>");
-				File.Delete (partPath + "\\validError.txt");
+			if (!PingInternet () || !connectStatus)
 				return true;
-			} 
-			if (File.Exists (partPath + "\\server Error.txt")) {
-				File.Delete (partPath + "\\server Error.txt");
-				if (!PingInternet ())
-					return false;
+
+			Fiddler ("\"request " + arg + "\"");
+
+			if (!File.Exists (listenerPath)) {
 				SetFail (true);
-				Logger ("ERROR: Server response error");
-				return true;
-			} 
-			if (File.Exists (partPath + "\\emptyError.txt")) {
-				File.Delete (LogPath + "\\emptyError.txt");
-				if (!PingInternet ())
-					return false;
-				SetFail (true);
-				Logger ("ERROR: Empty response");
-				return true;
+				Logger ("No listener file in the folder");
+				return false;
 			}
 
-			return false;
+			var res = File.ReadAllLines (listenerPath);
+			string str;
+			if (res.Length > 0)
+				str = res [res.Length - 1];
+			else {
+				SetFail (true);
+				Logger ("<td><font color=\"red\">ERROR: Fiddler doesn't respond</font></td></tr>");
+				return false;
+			}
+				
+			
+			str = str.ToLower ();
+			str = str.Trim ();
+
+			if (str == "true")
+				return true;
+			if (str == "false") {
+				SetFail (true);
+				SessionErrors = SessionErrors + 1;
+				Logger ("<td><font color=\"red\">ERROR: Session error <a href=\"" + partPath + "\\error(" + SessionErrors + ").txt\">" + partPath + "\\error(" + SessionErrors + ").txt</a></font></td></tr>");
+				return false;
+			} else
+				return false;
+
 		}
 	}
 }
