@@ -49,7 +49,7 @@ namespace comcash
 				noReceiptButton.Click();
 				Thread.Sleep(300);
 				AcceptPayment(win);
-				checkResponse("sale/perform");
+				checkResponse("sale");
 
 				return comcash;
 			}

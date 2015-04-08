@@ -253,6 +253,24 @@ class Start
 				} else if (valueTestCases [x].StartsWith ("continue")) {
 					app = newTest.Continue (app);
 					continue;
+				} else if (valueTestCases [x].StartsWith ("zeroprice")) {
+					string arg = newTest.GetArgument (valueTestCases [x]);
+					if (arg == "") {
+						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
+						newTest.SetFail (true);
+						continue;
+					}
+					app = newTest.zeroPrice (app, arg);
+					continue;
+				} else if (valueTestCases [x].StartsWith ("retprod")) {
+					string arg = newTest.GetArgument (valueTestCases [x]);
+					if (arg == "") {
+						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
+						newTest.SetFail (true);
+						continue;
+					}
+					app = newTest.ReturnProd (app, arg);
+					continue;
 				}
 					
 
@@ -266,6 +284,7 @@ class Start
 			Thread.Sleep (1000);
 			}
 		newTest.Logger ("<td><font color=\"red\">Errors: " + newTest.Errors + "</font></td></tr>");
+		newTest.deleteListener ();
 	    newTest.messBox ("Test Execution end \rErrors: " + newTest.Errors);
 
 		}

@@ -107,6 +107,10 @@ namespace comcash
 //test config settings END
 
 
+		public void deleteListener(){
+			File.Delete (listenerPath);
+		}
+
 		public int getReplayPoint(){
 			return replayPoint;
 		}

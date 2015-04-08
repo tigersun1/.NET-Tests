@@ -47,7 +47,7 @@ namespace comcash
 				Thread.Sleep(1000);
 
 				AcceptPayment(win);
-				checkResponse("sale/perform");
+				checkResponse("sale");
 
 				return comcash;
 			}

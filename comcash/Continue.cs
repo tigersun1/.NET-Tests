@@ -17,6 +17,7 @@ namespace comcash
 				noReceiptButton.Click();
 
 				AcceptPayment(win);
+				checkResponse("return");
 
 				return comcash;
 

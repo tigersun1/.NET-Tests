@@ -41,9 +41,7 @@ namespace comcash
 				var stopWatch = new Stopwatch();
 				stopWatch.Start();
 				while(stopWatch.ElapsedMilliseconds < 300000){
-					//if (checkResponse())
-					//	return comcash;
-					if (ListBox.Enabled)
+					if (ListBox.Enabled)						
 						break;
 					if(stopWatch.ElapsedMilliseconds > 250000){
 						Logger("<td><font color=\"red\">ERROR: Can't get list of transactions</font></td></tr>");
@@ -60,14 +58,34 @@ namespace comcash
 					var voidButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByText("Void"));
 					Thread.Sleep(500);
 					voidButton.Click();
-					Thread.Sleep(1000);
+					Thread.Sleep(500);
 					var noReceiptButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId("NoReceiptButton"));
 					noReceiptButton.Click();
-					Thread.Sleep(1000);
 
-					acceptReturn(comcash);
+					var stopwatch = new Stopwatch();
+					stopwatch.Start();
+					while (stopwatch.ElapsedMilliseconds < 5000){
+						var c = win.Items.Exists(obj=>obj.Name.Contains("Tenders for return"));
+						if(c){
+							var ReturnWindow = win.MdiChild(SearchCriteria.ByText("ReturnPaymentWindow"));
+							var ContButton = ReturnWindow.Get <TestStack.White.UIItems.Button> (SearchCriteria.ByAutomationId("ContinueButton"));
+							ContButton.Click();
+							Thread.Sleep(300);
 
+							break;
+						}
+						else if (stopwatch.ElapsedMilliseconds >5000){
+							SetFail(true);
+							Logger("<td><font color=\"red\">ERROR: No Tenders for return window</font></td></tr>");
+							return comcash;
+						}
+					}
+
+					AcceptPayment(win);
+					checkResponse("/sale/void");
+					ClickOnHomeButton(win);
 					return comcash;
+
 				} else{
 					var returnButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByText("Return"));
 					Thread.Sleep(500);
@@ -78,8 +96,6 @@ namespace comcash
 					stopwatch.Start();
 					while (stopwatch.ElapsedMilliseconds < 300000) {
 
-					//	if (checkResponse())
-					//		return comcash;
 						var label = win.Get<TestStack.White.UIItems.Label> (SearchCriteria.ByAutomationId ("ErrorMessageLabel"));
 						if (label.Name == "")
 							break;
@@ -90,6 +106,13 @@ namespace comcash
 						}
 
 					}
+
+					if (args.Contains("all")){ 
+						var listBox = win.Get<TestStack.White.UIItems.ListBoxItems.ListBox>(SearchCriteria.ByAutomationId("BuyHomeListBox"));
+						var list = listBox.Items;
+						foreach (var s in list)
+							ReturnProd(comcash, s.Text.ToLower());
+						}
 
 					return comcash;
 				}

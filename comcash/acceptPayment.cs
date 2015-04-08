@@ -37,7 +37,7 @@ namespace comcash
 					}
 					else if (label.Name == "" | label.Name.StartsWith("Operation is"))
 						continue;
-					else if (label.Name.ToLower().Contains ("сomplete") || label.Name.ToLower().Contains("return") || label.Name.ToLower().Contains("completed")) {
+					else if (label.Name.Contains ("Complete") || label.Name.ToLower().Contains("return") || label.Name.ToLower().Contains("completed")) {
 						var okButt = x.Get<TestStack.White.UIItems.Button> (SearchCriteria.ByAutomationId ("CloseMessageButton"));
 						okButt.Click ();
 						Thread.Sleep (1000);
