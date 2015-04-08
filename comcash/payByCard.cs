@@ -33,9 +33,7 @@ namespace comcash
 					return comcash;
 				}
 
-				var homeButt = win.Get<TestStack.White.UIItems.RadioButton> (SearchCriteria.ByAutomationId ("HomeNavButton"));
-				homeButt.Click();
-				Thread.Sleep(1000);
+				ClickOnHomeButton(win);
 
 				if (!value.Equals("")){
 					double cardCash = double.Parse(value);
@@ -72,7 +70,8 @@ namespace comcash
 
 				var dueLabel = win.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId("BalanceDueLabel"));
 				string due = dueLabel.Name;
-				due = due.Remove(0,1);
+				var index = due.IndexOf("$");
+				due = due.Remove(index,1);
 				double amount = double.Parse(due);
 				if (amount > 0)
 					return comcash;
@@ -83,6 +82,7 @@ namespace comcash
 				Thread.Sleep(1000);
 
 				AcceptPayment(win);
+				checkResponse("sale/perform");
 
 				return comcash;
 			}

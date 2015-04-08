@@ -99,8 +99,7 @@ class Start
 						newTest.SetFail (true);
 						continue;
 					}
-					bool f = valueTestCases [x].StartsWith ("!");
-					app = newTest.LogIn (app, pass, f);
+					app = newTest.LogIn (app, pass);
 					continue;
 				} else if (valueTestCases [x].Contains ("logout")) {
 					app = newTest.LogOut (app);
@@ -144,6 +143,7 @@ class Start
 						continue;
 					}
 					app = newTest.AddCustomer (app, cust);
+					continue;
 				
 				} else if (valueTestCases [x].Contains ("internet")) {
 					string status = newTest.GetArgument (valueTestCases [x]);
@@ -166,16 +166,7 @@ class Start
 				} else if (valueTestCases [x].Contains ("suspend")) {
 					app = newTest.Suspend (app);
 					continue;
-				} else if (valueTestCases [x].Contains ("qty")) {
-					string mod = newTest.GetArgument (valueTestCases [x]);
-					if (mod == "") {
-						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
-						newTest.SetFail (true);
-						continue;
-					}
-					app = newTest.AddQTY (app, mod);
-					continue;
-				} else if (valueTestCases [x].Contains ("return")) {
+				} else if (valueTestCases [x].StartsWith ("return")) {
 					string ar = newTest.GetArgument (valueTestCases [x]);
 					app = newTest.Return (app, ar);
 					continue;
@@ -186,6 +177,81 @@ class Start
 				} else if (valueTestCases [x].Contains ("checkresp")) {
 					string ar = newTest.GetArgument (valueTestCases [x]);
 					newTest.checkResponse (ar);
+					continue;
+				} else if (valueTestCases [x].Contains ("notax")) {
+					string arg = newTest.GetArgument (valueTestCases [x]);
+					if (arg == "") {
+						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
+						newTest.SetFail (true);
+						continue;
+					}
+					app = newTest.NoTax (app, arg);
+					continue;
+				} else if (valueTestCases [x].Contains ("removeprod")) {
+					string arg = newTest.GetArgument (valueTestCases [x]);
+					if (arg == "") {
+						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
+						newTest.SetFail (true);
+						continue;
+					}
+					app = newTest.RemoveProd (app, arg);
+					continue;
+				} else if (valueTestCases [x].Contains ("prodprice")) {
+					string arg = newTest.GetArgument (valueTestCases [x]);
+					if (arg == "") {
+						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
+						newTest.SetFail (true);
+						continue;
+					}
+					app = newTest.ChangeProdPrice (app, arg);
+					continue;
+				} else if (valueTestCases [x].Contains ("proddiscount")) {
+					string arg = newTest.GetArgument (valueTestCases [x]);
+					if (arg == "") {
+						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
+						newTest.SetFail (true);
+						continue;
+					}
+					app = newTest.SetProdDiscount (app, arg);
+					continue;
+				} else if (valueTestCases [x].Contains ("alldiscount")) {
+					string arg = newTest.GetArgument (valueTestCases [x]);
+					if (arg == "") {
+						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
+						newTest.SetFail (true);
+						continue;
+					}
+					app = newTest.SetAllDiscount (app, arg);
+					continue;
+				} else if (valueTestCases [x].Contains ("plu")) {
+					string arg = newTest.GetArgument (valueTestCases [x]);
+					if (arg == "" || arg.Length > 4) {
+						newTest.Logger ("<td><font color=\"red\">ERROR: Incorrect argument in PLU command</font></td></tr>");
+						newTest.SetFail (true);
+						continue;
+					}
+					app = newTest.PLU (app, arg);
+					continue;
+				} else if (valueTestCases [x].Contains ("checkamount")) {
+					string arg = newTest.GetArgument (valueTestCases [x]);
+					if (arg == "") {
+						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
+						newTest.SetFail (true);
+						continue;
+					}
+					app = newTest.CheckAmount (app, arg);
+					continue;
+				} else if (valueTestCases [x].Contains ("voidsale")) {
+					app = newTest.VoidSale (app);
+					continue;
+				} else if (valueTestCases [x].Contains ("closeout")) {
+					app = newTest.CloseOut (app);
+					continue;
+				} else if (valueTestCases [x].Contains ("simplereturn")) {
+					app = newTest.SimpleReturn (app);
+					continue;
+				} else if (valueTestCases [x].StartsWith ("continue")) {
+					app = newTest.Continue (app);
 					continue;
 				}
 					

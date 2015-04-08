@@ -54,6 +54,20 @@
     <Compile Include="ReturnProd.cs" />
     <Compile Include="MessageBox.cs" />
     <Compile Include="FiddlerCommands.cs" />
+    <Compile Include="OpenProduct.cs" />
+    <Compile Include="SaveProdDetails.cs" />
+    <Compile Include="NoTax.cs" />
+    <Compile Include="RemoveProd.cs" />
+    <Compile Include="ChangeProdPrice.cs" />
+    <Compile Include="SetProdDiscount.cs" />
+    <Compile Include="ClickOnHomeButton.cs" />
+    <Compile Include="SetAllDiscount.cs" />
+    <Compile Include="PLU.cs" />
+    <Compile Include="CheckAmount.cs" />
+    <Compile Include="VoidSale.cs" />
+    <Compile Include="CloseOut.cs" />
+    <Compile Include="SimpleReturn.cs" />
+    <Compile Include="Continue.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -118,5 +132,6 @@
   <ItemGroup>
     <Compile Include="TestData.cs" />
     <None Include="packages.config" />
+    <None Include="CustomRules.js" />
   </ItemGroup>
 </Project>

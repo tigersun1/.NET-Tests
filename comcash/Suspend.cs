@@ -27,10 +27,20 @@ namespace comcash
 
 			try{
 				var suspendButton = win.Get<TestStack.White.UIItems.Button> (SearchCriteria.ByAutomationId ("SuspendButton"));
-				var totalLabel = win.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId("SubTotalLabel"));
+				var totalLabel = win.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId("TotalLabel"));
 				var balanceLabel = win.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId("BalanceDueLabel"));
-				double total = double.Parse(totalLabel.Text.Remove(0,1));
-				double balance = double.Parse(balanceLabel.Text.Remove(0,1));
+
+				var totalLabelstring = totalLabel.Name;
+				var firstInd = totalLabelstring.IndexOf("$");
+				totalLabelstring = totalLabelstring.Remove(firstInd,1);
+				//messBox(totalLabelstring);
+				var total = double.Parse(totalLabelstring);
+
+				var balanceLbelstring = balanceLabel.Name;
+				var secondInd = balanceLbelstring.IndexOf("$");
+				balanceLbelstring = balanceLbelstring.Remove(secondInd,1);
+				var balance = double.Parse(balanceLbelstring);
+
 				Thread.Sleep (500);
 				suspendButton.Click ();
 				Thread.Sleep(1000);
@@ -43,6 +53,7 @@ namespace comcash
 				}
 
 				AcceptPayment (win);
+				checkResponse("sale/suspend");
 
 				return comcash;
 			}

@@ -43,6 +43,7 @@ namespace comcash
 					value= "";
 				}
 
+				ClickOnHomeButton(win);
 				tenderOthers(win, value);
 
 				var tenderOtherWin = win.MdiChild(SearchCriteria.ByText("TenderOtherWindow"));
@@ -74,7 +75,8 @@ namespace comcash
 
 				var dueLabel = win.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId("BalanceDueLabel"));
 				string due = dueLabel.Name;
-				due = due.Remove(0,1);
+				var index = due.IndexOf("$");
+				due = due.Remove(index,1);
 				double amount = double.Parse(due);
 				if (amount > 0)
 					return comcash;
@@ -83,6 +85,7 @@ namespace comcash
 				noReceiptButton.Click();
 				Thread.Sleep(1000);
 				AcceptPayment(win);
+				checkResponse("sale/perform");
 
 				return comcash;
 			}

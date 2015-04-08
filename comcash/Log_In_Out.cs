@@ -15,7 +15,7 @@ namespace comcash
 {
 	partial class TestData
 	{
-		public TestStack.White.Application LogIn(TestStack.White.Application comcash,string pin,bool fail)
+		public TestStack.White.Application LogIn(TestStack.White.Application comcash, string pin)
 		{
 
 			Window pinWindow = comcash.GetWindow (SearchCriteria.ByAutomationId("PINWindow"),TestStack.White.Factory.InitializeOption.NoCache);
@@ -33,31 +33,26 @@ namespace comcash
 				stopwatch.Start();
 				while (stopwatch.ElapsedMilliseconds < 300000){
 					List<Window> list = comcash.GetWindows();
-					if(list.Exists(obj=>obj.Id.StartsWith("Window"))){ 
-						if(fail == true){
-							SetFail(true);
-							Logger("<td><font color=\"red\">ERROR: User can LogIn with incorrect pin</font></td></tr>");
-							return comcash;
-						}
-						else{
+					if(list.Exists(obj=>obj.Id.StartsWith( "Window"))){ 
+						if(!list.Find(obj=>obj.Id.StartsWith("Window")).IsOffScreen){
 							checkResponse("authorization/login");
 							return comcash;
 						}
-					}
+						else {						
+							continue;
+						}
+						}
 
 					var c = pinWindow.Exists(SearchCriteria.ByAutomationId("ErrorMessageLabel"));
 					if(c){
-						if (fail == false){
+						
 							var b = pinWindow.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId("ErrorMessageLabel"));
 							Logger("<td><font color=\"red\">ERROR: " + b.Text + "</font></td></tr>");
 							SetFail(true);
 							return comcash;
-						}
-						else {
-							return comcash;
-						}
 					}
-				}
+					}
+
 
 				Logger("<td><font color=\"red\">ERROR: POS is hangs, wait " + stopwatch.ElapsedMilliseconds + " ms</font></td></tr>");
 				SetFail(true);

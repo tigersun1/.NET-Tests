@@ -30,8 +30,8 @@ namespace comcash
 
 				if (arg.Contains(",")){
 					var str = arg.Split(new Char [] {','});
-					prod = str[0].Trim();
-					qty = str[1].Trim();
+					prod = str[0].Trim().ToLower();
+					qty = str[1].Trim().ToLower();
 				} else {
 					prod = arg;
 				}
@@ -51,7 +51,7 @@ namespace comcash
 				Thread.Sleep(1000);
 
 				if (qty != null)
-					AddQTY(comcash, prod + "," + qty);
+					AddQTY(comcash, prod, qty);
 
 				return comcash;
 			}

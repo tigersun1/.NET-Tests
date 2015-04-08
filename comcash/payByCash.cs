@@ -26,9 +26,8 @@ namespace comcash
 			Window win = comcash.GetWindow(SearchCriteria.ByAutomationId("Window"),TestStack.White.Factory.InitializeOption.NoCache);
 
 			try{
-				var homeButt = win.Get<TestStack.White.UIItems.RadioButton> (SearchCriteria.ByAutomationId ("HomeNavButton"));
-				homeButt.Click();
-				Thread.Sleep(1000);
+
+				ClickOnHomeButton(win);
 
 				if (!payType.Equals(""))
 					EnterAmount(win, payType);
@@ -40,15 +39,17 @@ namespace comcash
 
 				var dueLabel = win.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId("BalanceDueLabel"));
 				string due = dueLabel.Name;
-				due = due.Remove(0,1);
+				var index = due.IndexOf("$");
+				due = due.Remove(index,1);
 				double amount = double.Parse(due);
 				if (amount > 0)
 					return comcash;
 
 				var noReceiptButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId("NoReceiptButton"));
 				noReceiptButton.Click();
-				Thread.Sleep(1000);
+				Thread.Sleep(300);
 				AcceptPayment(win);
+				checkResponse("sale/perform");
 
 				return comcash;
 			}

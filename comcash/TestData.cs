@@ -150,6 +150,7 @@ namespace comcash
 
 			try{
 				var field = x.Get<TestStack.White.UIItems.TextBox> (SearchCriteria.ByAutomationId ("CalculatorTextBox"));
+				field.BulkText = "";
 			    field.Enter (amount);
 			    x.WaitWhileBusy ();
 				Thread.Sleep(1000);
