@@ -68,6 +68,7 @@
     <Compile Include="SimpleReturn.cs" />
     <Compile Include="Continue.cs" />
     <Compile Include="zeroPrice.cs" />
+    <Compile Include="AddQTYbyButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

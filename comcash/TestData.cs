@@ -36,6 +36,7 @@ namespace comcash
 		private string FiddlerPath = @"C:\Program Files (x86)\Fiddler2";
 		private string listenerPath;
 		private string serverName;
+		private string listenerPathForFiddler;
 		string appPath;
 		private int Replay;
 		private int replayPoint;
@@ -51,6 +52,10 @@ namespace comcash
 
 			folderPath = Path.GetDirectoryName (Assembly.GetEntryAssembly ().Location);
 			listenerPath = folderPath + @"\listener.txt";
+			if (listenerPath.Contains (" ")) {
+				listenerPathForFiddler = "\"" + listenerPath + "\"";
+			} else
+				listenerPathForFiddler = listenerPath;
 			appPath = folderPath + @"\Comcash POS Application.exe";
 
 //test config settings
@@ -101,7 +106,7 @@ namespace comcash
 				}
 			} 
 				
-			Fiddler ("\"launch " + listenerPath + " " + serverName + " " + partPath +"\"");
+			Fiddler ("\"launch " + listenerPathForFiddler + " " + serverName + " " + partPath +"\"");
 		}
 
 //test config settings END

@@ -36,9 +36,9 @@ namespace comcash
 			if (str == "true")
 				return true;
 			if (str == "false") {
-				SetFail (true);
 				SessionErrors = SessionErrors + 1;
 				Logger ("<td><font color=\"red\">ERROR: Session error <a href=\"" + partPath + "\\error(" + SessionErrors + ").txt\">" + partPath + "\\error(" + SessionErrors + ").txt</a></font></td></tr>");
+				SetFail (true);
 				return false;
 			} else
 				return false;

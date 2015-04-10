@@ -33,7 +33,6 @@ namespace comcash
 				var totalLabelstring = totalLabel.Name;
 				var firstInd = totalLabelstring.IndexOf("$");
 				totalLabelstring = totalLabelstring.Remove(firstInd,1);
-				//messBox(totalLabelstring);
 				var total = double.Parse(totalLabelstring);
 
 				var balanceLbelstring = balanceLabel.Name;
@@ -46,10 +45,9 @@ namespace comcash
 				Thread.Sleep(1000);
 
 				if (total > balance){
-					var yesButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId("ButtonYES")); 
-					Thread.Sleep(500);
-					yesButton.Click();
-					Thread.Sleep(1000);
+					var noReceiptButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId("NoReceiptButton"));
+					noReceiptButton.Click();
+					Thread.Sleep(300);
 				}
 
 				AcceptPayment (win);

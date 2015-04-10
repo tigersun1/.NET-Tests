@@ -49,6 +49,7 @@ namespace comcash
 							var b = pinWindow.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId("ErrorMessageLabel"));
 							Logger("<td><font color=\"red\">ERROR: " + b.Text + "</font></td></tr>");
 							SetFail(true);
+							checkResponse("authorization/login");
 							return comcash;
 					}
 					}
@@ -98,6 +99,7 @@ namespace comcash
 
 				Logger("<td><font color=\"red\">ERROR: Can't LogOut</font></td></tr>");
 				SetFail(true);
+				checkResponse("authorization/logout");
 				return comcash;
 
 			}

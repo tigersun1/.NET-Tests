@@ -316,12 +316,14 @@ class Handlers
         }
        
         if (String.IsNullOrEmpty(thisSession.GetResponseBodyAsString)){
+        	errorCounter = errorCounter + 1;
             thisSession.SaveSession(logPath + "\\error(" + errorCounter + ").txt", false);
             return false;
         }
          
         
-        if (thisSession.oResponse.ToString().Contains("<error>")){
+        if (thisSession.GetResponseBodyAsString().Contains("<error>")) {
+            errorCounter = errorCounter + 1;
             thisSession.SaveSession(logPath + "\\error(" + errorCounter + ").txt", false);
             return false;
         }

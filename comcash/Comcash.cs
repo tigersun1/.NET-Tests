@@ -81,6 +81,11 @@ class Start
 					continue;
 				else if (valueTestCases [x].StartsWith ("replay")) {
 					string arg = newTest.GetArgument (valueTestCases [x]);
+					if (arg == "") {
+						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
+						newTest.SetFail (true);
+						continue;
+					}
 					int val = int.Parse (arg);
 					newTest.setReplay (val);
 					newTest.setReplayPoint (x);
@@ -271,8 +276,28 @@ class Start
 					}
 					app = newTest.ReturnProd (app, arg);
 					continue;
+				} else if (valueTestCases [x].StartsWith ("qty")) {
+					string arg = newTest.GetArgument (valueTestCases [x]);
+					if (arg == "") {
+						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
+						newTest.SetFail (true);
+						continue;
+					}
+					var str = arg.Split (new Char [] { ',' });
+					var prod = str [0].Trim ().ToLower ();
+					var val = str [1].Trim ().ToLower ();
+					app = newTest.AddQTY (app, prod, val);
+					continue;
+				} else if (valueTestCases [x].StartsWith ("qt")) {
+					string arg = newTest.GetArgument (valueTestCases [x]);
+					if (arg == "") {
+						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
+						newTest.SetFail (true);
+						continue;
+					}
+					app = newTest.AddQTYbyButton (app, arg);
+					continue;
 				}
-					
 
 				else {
 					newTest.Logger ("<td><font color=\"red\">Unknown command: <" + valueTestCases[x] + ">, test case stopped</font></td></tr>");
@@ -284,8 +309,8 @@ class Start
 			Thread.Sleep (1000);
 			}
 		newTest.Logger ("<td><font color=\"red\">Errors: " + newTest.Errors + "</font></td></tr>");
-		newTest.deleteListener ();
 	    newTest.messBox ("Test Execution end \rErrors: " + newTest.Errors);
+		newTest.deleteListener ();
 
 		}
 
