@@ -77,7 +77,8 @@ namespace comcash
 				string due = dueLabel.Name;
 				var index = due.IndexOf("$");
 				due = due.Remove(index,1);
-				double amount = double.Parse(due);
+				double amount;
+				Double.TryParse(due, out amount);
 				if (amount > 0)
 					return comcash;
 

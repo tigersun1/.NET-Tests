@@ -12,12 +12,14 @@ namespace comcash
 			try{
 				var win = comcash.GetWindow (SearchCriteria.ByAutomationId ("Window"), TestStack.White.Factory.InitializeOption.NoCache);
 
-				var value = double.Parse(arg);
+				double value;
+				Double.TryParse(arg, out value);
 				var dueLabel = win.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId("BalanceDueLabel"));
 				string due = dueLabel.Name;
 				var index = due.IndexOf("$");
-				due = due.Remove(index,1);
-				double amount = double.Parse(due);
+				due = due.Remove(index, 1);
+				double amount;
+				Double.TryParse(due, out amount);
 
 				if (value != amount){
 					Logger ("<td><font color=\"red\">ERROR: actual amount " + amount + " is not equal to expected amount " + value+ " </font></td></tr>");

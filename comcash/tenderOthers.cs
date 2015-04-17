@@ -31,11 +31,13 @@ namespace comcash
 				Thread.Sleep(1000);
 
 				if (!value.Equals("")){
-					double couponCash = double.Parse(value);
+					double couponCash;
+					Double.TryParse(value, out couponCash);
 					var label = comWin.Get<TestStack.White.UIItems.Label> (SearchCriteria.ByAutomationId ("BalanceDueLabel")).Name;
 					var index = label.IndexOf("$");
 					label = label.Remove(index, 1);
-					double actCash = double.Parse (label);
+					double actCash;
+					Double.TryParse (label, out actCash);
 					if (couponCash > actCash){
 						Logger("<td><font color=\"red\">ERROR: Entered amount more than balance amount</font></td></tr>");
 						SetFail(true);

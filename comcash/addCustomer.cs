@@ -52,17 +52,17 @@ namespace comcash
 
 				var stopwatch = new Stopwatch();
 				stopwatch.Start();
+
 				for (int i = 0; ; i++) {
 					var errlabel = win.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId("ErrorMessageLabel"));
-					if (stopwatch.ElapsedMilliseconds > 300000){
-						Logger("<td><font color=\"red\">ERROR: server doesn't return customer list</font></td></tr>");
+					if (stopwatch.ElapsedMilliseconds > 300000) {
+						Logger("<td><font color=\"red\">ERROR: POS hangs</font></td></tr>");
 						SetFail(true);
 						return comcash;
 					}
-					else if (errlabel.Name.StartsWith("Operation is"))
-						continue;
-					else 
+					if (!errlabel.Name.StartsWith("Operation is")){
 						break;
+					}
 				}
 
 				if (!checkResponse("customers"))
@@ -80,7 +80,7 @@ namespace comcash
 
 				SelectionItemPattern sel = item.GetCurrentPattern (SelectionItemPattern.Pattern) as SelectionItemPattern;
 				sel.Select();
-				Thread.Sleep(1000);
+				//Thread.Sleep(1000);
 
 				var continueButton = item.FindFirst (TreeScope.Descendants, new PropertyCondition (AutomationElement.NameProperty, "Continue"));
 

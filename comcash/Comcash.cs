@@ -27,7 +27,6 @@ class Start
 	{
 		//Initialization TestData
 		var newTest = new TestData ();
-		newTest.PingInternet ();
 		if (!newTest.messBox ("Start Test Execution?")) 
 			return;
 
@@ -67,220 +66,172 @@ class Start
 			//Do commands from the test case;
 			newTest.Logger("<td>Start execute: <a href=\"" + TestCases[i] + "\">" + TestCases[i] + "</a></td></tr>");
 			for (int x = 0; x < valueTestCases.Length; x++) {
-			     
-				valueTestCases [x] = valueTestCases [x].ToLower ();
-				valueTestCases [x] = valueTestCases [x].Trim ();
+			
+			//Check if there is a fail or empty/commentet line
 
-				if (newTest.GetFail ()) {
+				 if (newTest.GetFail ()) {
 					app.Close ();
 					newTest.setKilled (true);
 					newTest.SetFail (false);
-					newTest.Logger ("<td><font color=\"red\">Error in the line: " + x + "</font></td></tr>");
+					newTest.Logger ("<td><font color=\"red\">Error in the line:" + x + " -- " + valueTestCases[x-1] + "</font></td></tr>");
 					break;
-				} else if (valueTestCases [x].StartsWith ("//") | valueTestCases [x].ToString () == "")
+				} else if (valueTestCases[x].StartsWith ("//") || valueTestCases[x] == "")
 					continue;
-				else if (valueTestCases [x].StartsWith ("replay")) {
-					string arg = newTest.GetArgument (valueTestCases [x]);
+
+
+
+				string [] use = newTest.GetArgument (valueTestCases [x]);
+				string command = use [0];
+				string arg = use [1];
+
+				if (command == "replay") {
 					if (arg == "") {
-						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
-						newTest.SetFail (true);
+						newTest.ErrorEmptyArgument ();
 						continue;
 					}
 					int val = int.Parse (arg);
 					newTest.setReplay (val);
 					newTest.setReplayPoint (x);
 					continue;
-				} else if (valueTestCases [x].StartsWith ("endreplay")) {
+				} else if (command == "endreplay") {
 					newTest.setReplay (newTest.getReplay () - 1);
 					if (newTest.getReplay () > 0) {
 						x = newTest.getReplayPoint ();
 						continue;
 					} else
 						continue;
-				} else if (valueTestCases [x].Contains ("login")) {
-					string pass = newTest.GetArgument (valueTestCases [x]);
-					if (pass == "") {
-						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
-						newTest.SetFail (true);
-						continue;
-					}
-					app = newTest.LogIn (app, pass);
+				} else if (command == "login") {
+					if (arg == "") 
+						newTest.ErrorEmptyArgument();
+					else
+						app = newTest.LogIn (app, arg);
 					continue;
-				} else if (valueTestCases [x].Contains ("logout")) {
+				} else if (command == "logout") {
 					app = newTest.LogOut (app);
-				} else if (valueTestCases [x].Contains ("addprod")) {
-					string pr = newTest.GetArgument (valueTestCases [x]);
-					if (pr == "") {
-						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
-						newTest.SetFail (true);
-						continue;
-					}
-					app = newTest.AddProd (app, pr);
-				} else if (valueTestCases [x].Contains ("paycash")) {
-					string value = newTest.GetArgument (valueTestCases [x]);
-					app = newTest.payByCash (app, value);
 					continue;
-				} else if (valueTestCases [x].Contains ("paycard")) {
-					string value = newTest.GetArgument (valueTestCases [x]);
-					app = newTest.payByCard (app, value);
+				} else if (command == "addprod") {
+					if (arg == "") 
+						newTest.ErrorEmptyArgument ();
+					else
+						app = newTest.AddProd (app, arg);
 					continue;
-				} else if (valueTestCases [x].Contains ("paycoupon")) {
-					string value = newTest.GetArgument (valueTestCases [x]);
-					app = newTest.payByCoupon (app, value);
+				} else if (command == "paycash") {
+					app = newTest.payByCash (app, arg);
 					continue;
-				} else if (valueTestCases [x].Contains ("payar")) {
-					string value = newTest.GetArgument (valueTestCases [x]);
-					app = newTest.payByAR (app, value);
+				} else if (command == "paycard") {
+					app = newTest.payByCard (app, arg);
 					continue;
-				} else if (valueTestCases [x].Contains ("paystore")) {
-					string value = newTest.GetArgument (valueTestCases [x]);
-					app = newTest.payByCoupon (app, value);
+				} else if (command == "paycoupon") {
+					app = newTest.payByCoupon (app, arg);
 					continue;
-				} else if (valueTestCases [x].Contains ("paygift")) {
-					string value = newTest.GetArgument (valueTestCases [x]);
-					app = newTest.payByGift (app, value);
+				} else if (command == "payar") {
+					app = newTest.payByAR (app, arg);
 					continue;
-				} else if (valueTestCases [x].Contains ("addcustomer")) {
-					string cust = newTest.GetArgument (valueTestCases [x]);
-					if (cust == "") {
-						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
-						newTest.SetFail (true);
-						continue;
-					}
-					app = newTest.AddCustomer (app, cust);
+				} else if (command == "paystore") {
+					app = newTest.payByCoupon (app, arg);
 					continue;
-				
-				} else if (valueTestCases [x].Contains ("internet")) {
-					string status = newTest.GetArgument (valueTestCases [x]);
-					if (status == "") {
-						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
-						newTest.SetFail (true);
-						continue;
-					}
-					newTest.Internet (status);
+				} else if (command == "paygift") {
+					app = newTest.payByGift (app, arg);
 					continue;
-				} else if (valueTestCases [x].Contains ("addmod")) {
-					string mod = newTest.GetArgument (valueTestCases [x]);
-					if (mod == "") {
-						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
-						newTest.SetFail (true);
-						continue;
-					}
-					app = newTest.addModifiers (app, mod);
+				} else if (command =="addcustomer") {
+					if (arg == "") 
+						newTest.ErrorEmptyArgument ();
+					else
+						app = newTest.AddCustomer (app, arg);
 					continue;
-				} else if (valueTestCases [x].Contains ("suspend")) {
+				} else if (command == "internet") {
+					if (arg == "") 
+						newTest.ErrorEmptyArgument ();
+					else
+						newTest.Internet (arg);
+					continue;
+				} else if (command == "addmod") {
+					if (arg == "") 
+						newTest.ErrorEmptyArgument ();
+					else
+						app = newTest.addModifiers (app, arg);
+					continue;
+				} else if (command == "suspend") {
 					app = newTest.Suspend (app);
 					continue;
-				} else if (valueTestCases [x].StartsWith ("return")) {
-					string ar = newTest.GetArgument (valueTestCases [x]);
-					app = newTest.Return (app, ar);
+				} else if (command == "return") {
+					app = newTest.Return (app, arg);
 					continue;
-				} else if (valueTestCases [x].Contains ("recall")) {
-					string arg = newTest.GetArgument (valueTestCases [x]);
+				} else if (command == "recall") {
 					app = newTest.recallSuspend (app, arg);
 					continue;
-				} else if (valueTestCases [x].Contains ("checkresp")) {
-					string ar = newTest.GetArgument (valueTestCases [x]);
-					newTest.checkResponse (ar);
+				} else if (command == "checkresp") {
+					newTest.checkResponse (arg);
 					continue;
-				} else if (valueTestCases [x].Contains ("notax")) {
-					string arg = newTest.GetArgument (valueTestCases [x]);
-					if (arg == "") {
-						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
-						newTest.SetFail (true);
-						continue;
-					}
-					app = newTest.NoTax (app, arg);
+				} else if (command == "notax") {
+					if (arg == "") 
+						newTest.ErrorEmptyArgument ();
+					else
+						app = newTest.NoTax (app, arg);
 					continue;
-				} else if (valueTestCases [x].Contains ("removeprod")) {
-					string arg = newTest.GetArgument (valueTestCases [x]);
-					if (arg == "") {
-						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
-						newTest.SetFail (true);
-						continue;
-					}
-					app = newTest.RemoveProd (app, arg);
+				} else if (command == "removeprod") {
+					if (arg == "") 
+						newTest.ErrorEmptyArgument ();
+					else
+						app = newTest.RemoveProd (app, arg);
 					continue;
-				} else if (valueTestCases [x].Contains ("prodprice")) {
-					string arg = newTest.GetArgument (valueTestCases [x]);
-					if (arg == "") {
-						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
-						newTest.SetFail (true);
-						continue;
-					}
-					app = newTest.ChangeProdPrice (app, arg);
+				} else if (command == "prodprice") {
+					if (arg == "") 
+						newTest.ErrorEmptyArgument ();
+					else
+						app = newTest.ChangeProdPrice (app, arg);
 					continue;
-				} else if (valueTestCases [x].Contains ("proddiscount")) {
-					string arg = newTest.GetArgument (valueTestCases [x]);
-					if (arg == "") {
-						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
-						newTest.SetFail (true);
-						continue;
-					}
-					app = newTest.SetProdDiscount (app, arg);
+				} else if (command == "proddiscount") {
+					if (arg == "") 
+						newTest.ErrorEmptyArgument ();
+					else
+						app = newTest.SetProdDiscount (app, arg);
 					continue;
-				} else if (valueTestCases [x].Contains ("alldiscount")) {
-					string arg = newTest.GetArgument (valueTestCases [x]);
-					if (arg == "") {
-						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
-						newTest.SetFail (true);
-						continue;
-					}
-					app = newTest.SetAllDiscount (app, arg);
+				} else if (command == "alldiscount") {
+					if (arg == "") 
+						newTest.ErrorEmptyArgument ();
+					else
+						app = newTest.SetAllDiscount (app, arg);
 					continue;
-				} else if (valueTestCases [x].Contains ("plu")) {
-					string arg = newTest.GetArgument (valueTestCases [x]);
-					if (arg == "" || arg.Length > 4) {
-						newTest.Logger ("<td><font color=\"red\">ERROR: Incorrect argument in PLU command</font></td></tr>");
-						newTest.SetFail (true);
-						continue;
-					}
-					app = newTest.PLU (app, arg);
+				} else if (command == "addbyplu") {
+					if (arg == "" || arg.Length > 4) 
+						newTest.ErrorEmptyArgument ();
+					else
+						app = newTest.PLU (app, arg);
 					continue;
-				} else if (valueTestCases [x].Contains ("checkamount")) {
-					string arg = newTest.GetArgument (valueTestCases [x]);
-					if (arg == "") {
-						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
-						newTest.SetFail (true);
-						continue;
-					}
-					app = newTest.CheckAmount (app, arg);
+				} else if (command == "checkamount") {
+					if (arg == "") 
+						newTest.ErrorEmptyArgument ();
+					else
+						app = newTest.CheckAmount (app, arg);
 					continue;
-				} else if (valueTestCases [x].Contains ("voidsale")) {
+				} else if (command == "voidsale") {
 					app = newTest.VoidSale (app);
 					continue;
-				} else if (valueTestCases [x].Contains ("closeout")) {
+				} else if (command == "closeout") {
 					app = newTest.CloseOut (app);
 					continue;
-				} else if (valueTestCases [x].Contains ("simplereturn")) {
+				} else if (command == "simplereturn") {
 					app = newTest.SimpleReturn (app);
 					continue;
-				} else if (valueTestCases [x].StartsWith ("continue")) {
+				} else if (command == "continue") {
 					app = newTest.Continue (app);
 					continue;
-				} else if (valueTestCases [x].StartsWith ("zeroprice")) {
-					string arg = newTest.GetArgument (valueTestCases [x]);
-					if (arg == "") {
-						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
-						newTest.SetFail (true);
-						continue;
-					}
-					app = newTest.zeroPrice (app, arg);
+				} else if (command == "zeroprice") {
+					if (arg == "") 
+						newTest.ErrorEmptyArgument ();
+					else
+						app = newTest.zeroPrice (app, arg);
 					continue;
-				} else if (valueTestCases [x].StartsWith ("retprod")) {
-					string arg = newTest.GetArgument (valueTestCases [x]);
-					if (arg == "") {
-						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
-						newTest.SetFail (true);
-						continue;
-					}
-					app = newTest.ReturnProd (app, arg);
+				} else if (command == "returnprod") {
+					if (arg == "") 
+						newTest.ErrorEmptyArgument ();
+					else
+						app = newTest.ReturnProd (app, arg);
 					continue;
-				} else if (valueTestCases [x].StartsWith ("qty")) {
-					string arg = newTest.GetArgument (valueTestCases [x]);
+				} else if (command == "qty") {
 					if (arg == "") {
-						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
-						newTest.SetFail (true);
+						newTest.ErrorEmptyArgument ();
 						continue;
 					}
 					var str = arg.Split (new Char [] { ',' });
@@ -288,14 +239,11 @@ class Start
 					var val = str [1].Trim ().ToLower ();
 					app = newTest.AddQTY (app, prod, val);
 					continue;
-				} else if (valueTestCases [x].StartsWith ("qt")) {
-					string arg = newTest.GetArgument (valueTestCases [x]);
-					if (arg == "") {
-						newTest.Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
-						newTest.SetFail (true);
-						continue;
-					}
-					app = newTest.AddQTYbyButton (app, arg);
+				} else if (command == "qt") {
+					if (arg == "") 
+						newTest.ErrorEmptyArgument ();
+					else
+						app = newTest.AddQTYbyButton (app, arg);
 					continue;
 				}
 
@@ -304,7 +252,17 @@ class Start
 					break;
 				}
 
-				}
+
+
+			}
+
+			if (newTest.GetFail ()) {
+				app.Close ();
+				newTest.setKilled (true);
+				newTest.Logger ("<td><font color=\"red\">Error in the last line</font></td></tr>");
+
+			}
+
 			newTest.Logger ("<td>End case execution</td></tr>");
 			Thread.Sleep (1000);
 			}

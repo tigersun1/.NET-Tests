@@ -33,12 +33,14 @@ namespace comcash
 				var totalLabelstring = totalLabel.Name;
 				var firstInd = totalLabelstring.IndexOf("$");
 				totalLabelstring = totalLabelstring.Remove(firstInd,1);
-				var total = double.Parse(totalLabelstring);
+				double total;
+				Double.TryParse(totalLabelstring, out total);
 
 				var balanceLbelstring = balanceLabel.Name;
 				var secondInd = balanceLbelstring.IndexOf("$");
 				balanceLbelstring = balanceLbelstring.Remove(secondInd,1);
-				var balance = double.Parse(balanceLbelstring);
+				double balance;
+				Double.TryParse(balanceLbelstring, out balance);
 
 				Thread.Sleep (500);
 				suspendButton.Click ();

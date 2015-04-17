@@ -70,7 +70,15 @@ namespace comcash
 							var ReturnWindow = win.MdiChild(SearchCriteria.ByText("ReturnPaymentWindow"));
 							var ContButton = ReturnWindow.Get <TestStack.White.UIItems.Button> (SearchCriteria.ByAutomationId("ContinueButton"));
 							ContButton.Click();
-							Thread.Sleep(300);
+
+							//Thread.Sleep(300);
+
+							stopwatch.Restart();
+							while(stopwatch.ElapsedMilliseconds < 6000){
+								var t = win.Items.Exists(obj=>obj.Name.Contains("Tenders for return"));
+								if (!t)
+									break;
+							}
 
 							break;
 						}
@@ -80,6 +88,8 @@ namespace comcash
 							return comcash;
 						}
 					}
+
+					//Thread.Sleep(500);
 
 					AcceptPayment(win);
 					checkResponse("/sale/void");

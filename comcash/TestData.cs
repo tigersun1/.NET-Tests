@@ -111,6 +111,11 @@ namespace comcash
 
 //test config settings END
 
+		public void ErrorEmptyArgument()
+		{
+			Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
+			SetFail (true);
+		}
 
 		public void deleteListener(){
 			File.Delete (listenerPath);
@@ -175,25 +180,23 @@ namespace comcash
 		}
 
 
-		public string GetArgument(string str)
+		public string[] GetArgument (string str)
 		{
-			string str2 = "";
-			for (int x = 0; x < str.Length; x++) {
-				if (str [x] == '(') {
-					x++;
-					if (str [x] == ')') {
-						return str2;
-					} else {
-						do {
-							str2 += str [x];
-							x++;
-						} while (str [x] != ')' && x < str.Length);
-					}
-					break;
-				}
+
+			string [] split = str.Split(new Char [] {'('}); 
+			if (split [1] == null)
+				split [1] = "";
+
+			else if (split [1][split [1].Length - 1] == ')')
+				split[1] = split [1].Remove (split [1].Length - 1);
+
+			for (int x = 0; x < split.Length; x++) {
+				split [x] = split [x].ToLower (); 
+				split [x] = split [x].Trim ();
 			}
-			str2 = str2.Trim ();
-			return str2;
+
+			return split;
+
 		}
 
 
