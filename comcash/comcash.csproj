@@ -29,30 +29,19 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="Comcash.cs" />
-    <Compile Include="Logger.cs" />
     <Compile Include="Log_In_Out.cs" />
     <Compile Include="addCustomer.cs" />
     <Compile Include="Launch.cs" />
     <Compile Include="addProduct.cs" />
-    <Compile Include="payByCash.cs" />
     <Compile Include="acceptPayment.cs" />
-    <Compile Include="Internet.cs" />
-    <Compile Include="Capture.cs" />
     <Compile Include="addModifiers.cs" />
-    <Compile Include="payByCard.cs" />
     <Compile Include="Suspend.cs" />
     <Compile Include="recallSuspend.cs" />
     <Compile Include="tenderOthers.cs" />
-    <Compile Include="payByCoupon.cs" />
-    <Compile Include="payByAR.cs" />
-    <Compile Include="payByStore.cs" />
-    <Compile Include="payByGift.cs" />
-    <Compile Include="checkResponse.cs" />
     <Compile Include="AddQTY.cs" />
     <Compile Include="Return.cs" />
     <Compile Include="ReturnProd.cs" />
     <Compile Include="MessageBox.cs" />
-    <Compile Include="FiddlerCommands.cs" />
     <Compile Include="OpenProduct.cs" />
     <Compile Include="SaveProdDetails.cs" />
     <Compile Include="NoTax.cs" />
@@ -69,6 +58,13 @@
     <Compile Include="Continue.cs" />
     <Compile Include="zeroPrice.cs" />
     <Compile Include="AddQTYbyButton.cs" />
+    <Compile Include="Variables.cs" />
+    <Compile Include="Log.cs" />
+    <Compile Include="ConfigTest.cs" />
+    <Compile Include="Fiddler.cs" />
+    <Compile Include="Inet.cs" />
+    <Compile Include="Payments.cs" />
+    <Compile Include="Customer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

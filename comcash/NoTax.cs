@@ -1,6 +1,5 @@
 ﻿using TestStack.White.UIItems.WindowItems;
 using TestStack.White.UIItems.Finders;
-using System.Threading;
 using System;
 
 namespace comcash
@@ -11,14 +10,13 @@ namespace comcash
 		{
 			try {
 				var win = OpenProduct (comcash, prod);
-				var Button = win.Get<TestStack.White.UIItems.Button> (SearchCriteria.ByAutomationId("NoTaxProductButton"));
+				var Button = win.Get<TestStack.White.UIItems.Button> (SearchCriteria.ByAutomationId(Variables.NoTaxProductButtonId));
 				Button.Click();
 				SaveProdDetails(win);
 				return comcash;
 				
 				} catch (Exception e){
-					Logger ("<td><font color=\"red\">ERROR: " + e + "</font></td></tr>");
-					SetFail (true);
+					Log.Error(e.ToString(), true);
 					return comcash;
 				}
 			

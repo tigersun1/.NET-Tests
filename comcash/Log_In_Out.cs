@@ -1,11 +1,7 @@
 ﻿using System;
-using TestStack;
 using TestStack.White.UIItems.WindowItems;
 using TestStack.White.UIItems;
-using TestStack.White.UIItems.MenuItems;
 using TestStack.White.UIItems.Finders;
-using TestStack.White.UIItems.TreeItems;
-using TestStack.White.UIItems.WindowStripControls;
 using System.Diagnostics;
 using System.Threading;
 using System.Collections.Generic;
@@ -18,11 +14,11 @@ namespace comcash
 		public TestStack.White.Application LogIn(TestStack.White.Application comcash, string pin)
 		{
 
-			Window pinWindow = comcash.GetWindow (SearchCriteria.ByAutomationId("PINWindow"),TestStack.White.Factory.InitializeOption.NoCache);
+			Window pinWindow = comcash.GetWindow (SearchCriteria.ByAutomationId(Variables.PinWindowId),TestStack.White.Factory.InitializeOption.NoCache);
 
 			try{
-				TestStack.White.UIItems.Button LogInBut = pinWindow.Get<TestStack.White.UIItems.Button> (SearchCriteria.ByAutomationId("LogInButton"));
-				TestStack.White.UIItems.TextBox textBox = pinWindow.Get<TestStack.White.UIItems.TextBox> (SearchCriteria.ByAutomationId("PinPasswordBox"));
+				TestStack.White.UIItems.Button LogInBut = pinWindow.Get<TestStack.White.UIItems.Button> (SearchCriteria.ByAutomationId (Variables.LogInButtonId));
+				TestStack.White.UIItems.TextBox textBox = pinWindow.Get<TestStack.White.UIItems.TextBox> (SearchCriteria.ByAutomationId(Variables.PinPasswordBoxId));
 				textBox.Enter (pin);
 				pinWindow.WaitWhileBusy();
 				LogInBut.Click ();
@@ -33,9 +29,9 @@ namespace comcash
 				stopwatch.Start();
 				while (stopwatch.ElapsedMilliseconds < 300000){
 					List<Window> list = comcash.GetWindows();
-					if(list.Exists(obj=>obj.Id.StartsWith( "Window"))){ 
-						if(!list.Find(obj=>obj.Id.StartsWith("Window")).IsOffScreen){
-							checkResponse("authorization/login");
+					if(list.Exists(obj=>obj.Id.StartsWith( Variables.MainWindowId))){ 
+						if(!list.Find(obj=>obj.Id.StartsWith(Variables.MainWindowId)).IsOffScreen){
+							Fiddler.checkResponse("authorization/login");
 							return comcash;
 						}
 						else {						
@@ -43,26 +39,23 @@ namespace comcash
 						}
 						}
 
-					var c = pinWindow.Exists(SearchCriteria.ByAutomationId("ErrorMessageLabel"));
+					var c = pinWindow.Exists(SearchCriteria.ByAutomationId(Variables.ErrorMessageLabelId));
 					if(c){
 						
-							var b = pinWindow.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId("ErrorMessageLabel"));
-							Logger("<td><font color=\"red\">ERROR: " + b.Text + "</font></td></tr>");
-							SetFail(true);
-							checkResponse("authorization/login");
+						var b = pinWindow.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId(Variables.ErrorMessageLabelId));
+							Log.Error(b.Text, true);
+						Fiddler.checkResponse("authorization/login");
 							return comcash;
 					}
 					}
 
 
-				Logger("<td><font color=\"red\">ERROR: POS is hangs, wait " + stopwatch.ElapsedMilliseconds + " ms</font></td></tr>");
-				SetFail(true);
+				Log.Error("POS is hangs, wait " + stopwatch.ElapsedMilliseconds + " ms", true);
 				return comcash;	
 			}
 
 			catch (Exception e){
-				Logger ("<td><font color=\"red\">ERROR: " + e + "</font></td></tr>");
-				SetFail (true);
+				Log.Error(e.ToString(), true);
 				return comcash;
 			}
 		}
@@ -70,9 +63,9 @@ namespace comcash
 
 		public TestStack.White.Application LogOut(TestStack.White.Application comcash){
 
-			Window mainWindow = comcash.GetWindow (SearchCriteria.ByAutomationId("Window"),TestStack.White.Factory.InitializeOption.NoCache);
+			Window mainWindow = comcash.GetWindow (SearchCriteria.ByAutomationId(Variables.MainWindowId),TestStack.White.Factory.InitializeOption.NoCache);
 			try{
-				TestStack.White.UIItems.Button LogOut = mainWindow.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId("LogoutButton"));
+				TestStack.White.UIItems.Button LogOut = mainWindow.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId(Variables.LogoutButtonId));
 
 				Thread.Sleep(1000);
 
@@ -82,8 +75,7 @@ namespace comcash
 					Thread.Sleep(2000);
 				}
 				else{
-					Logger("<td><font color=\"red\">ERROR: LogOut button is disabled</font></td></tr>");
-					SetFail(true);
+					Log.Error("LogOut button is disabled", true);
 					return comcash;
 				}
 
@@ -91,23 +83,21 @@ namespace comcash
 				stopwatch.Start();
 				for ( int x = 0; stopwatch.ElapsedMilliseconds < 60000; x++){
 					List<Window> list = comcash.GetWindows();
-					if(list.Exists(obj=>obj.Id.StartsWith("PINWindow"))){
-						checkResponse("authorization/logout");
+					if(list.Exists(obj=>obj.Id.StartsWith(Variables.PinWindowId))){
+						Fiddler.checkResponse("authorization/logout");
 						return comcash;
 					}
 				}
-
-				Logger("<td><font color=\"red\">ERROR: Can't LogOut</font></td></tr>");
-				SetFail(true);
-				checkResponse("authorization/logout");
+					
+				Log.Error("Can't LogOut", true);
+				Fiddler.checkResponse("authorization/logout");
 				return comcash;
 
 			}
 
 
 			catch (Exception e){
-				Logger ("<td><font color=\"red\">ERROR: " + e + "</font></td></tr>");
-				SetFail (true);
+				Log.Error(e.ToString(), true);
 				return comcash;
 			}
 

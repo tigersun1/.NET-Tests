@@ -301,7 +301,7 @@ class Handlers
         var thisSession: Session = null;
        
         for ( length; length >= 0; length-- ) {
-            if (oSessions[length].uriContains(arg)|| oSessions[length].uriContains(serverName)){
+            if (oSessions[length].uriContains(arg) && oSessions[length].uriContains(serverName)){
                 thisSession = oSessions[length];
                 break;
             }

@@ -9,9 +9,9 @@ namespace comcash
 	{
 		public Window OpenProduct (TestStack.White.Application comcash, string ProdName)
 		{
-			Window win = comcash.GetWindow (SearchCriteria.ByAutomationId ("Window"), TestStack.White.Factory.InitializeOption.NoCache);
+			Window win = comcash.GetWindow (SearchCriteria.ByAutomationId (Variables.MainWindowId), TestStack.White.Factory.InitializeOption.NoCache);
 			try{
-			var listBox = win.Get<TestStack.White.UIItems.ListBoxItems.ListBox>(SearchCriteria.ByAutomationId("BuyHomeListBox"));
+				var listBox = win.Get<TestStack.White.UIItems.ListBoxItems.ListBox>(SearchCriteria.ByAutomationId(Variables.BuyHomeListBoxId));
 			var listItem = listBox.Items.Find(item=>item.Text.ToLower().StartsWith(ProdName));
 			Thread.Sleep(1000);
 			listItem.Click();
@@ -21,8 +21,7 @@ namespace comcash
 			return win;
 
 			}catch (Exception e){
-				Logger ("<td><font color=\"red\">ERROR: " + e + "</font></td></tr>");
-				SetFail (true);
+				Log.Error(e.ToString(), true);
 				return win;
 			}
 		}

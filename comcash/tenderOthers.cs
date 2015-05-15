@@ -1,21 +1,8 @@
 ﻿using System;
-using System.Windows;
-using System.Windows.Automation;
-using System.Windows.Forms;
-using System.Diagnostics;
-using System.ComponentModel;
-using System.Reflection;
 using System.Threading;
-using System.IO; 
-using TestStack;
-using TestStack.White.Recording;
 using TestStack.White.UIItems.WindowItems;
 using TestStack.White.UIItems;
-using TestStack.White.UIItems.MenuItems;
 using TestStack.White.UIItems.Finders;
-using TestStack.White.UIItems.TreeItems;
-using TestStack.White.UIItems.WindowStripControls;
-using System.Collections.Generic;
 
 namespace comcash
 {
@@ -26,36 +13,34 @@ namespace comcash
 			try{
 				Thread.Sleep (1000);
 
-				var homeButt = comWin.Get<TestStack.White.UIItems.RadioButton> (SearchCriteria.ByAutomationId ("HomeNavButton"));
+				var homeButt = comWin.Get<TestStack.White.UIItems.RadioButton> (SearchCriteria.ByAutomationId (Variables.HomeNavButtonId));
 				homeButt.Click();
 				Thread.Sleep(1000);
 
 				if (!value.Equals("")){
-					double couponCash;
-					Double.TryParse(value, out couponCash);
-					var label = comWin.Get<TestStack.White.UIItems.Label> (SearchCriteria.ByAutomationId ("BalanceDueLabel")).Name;
+					decimal couponCash;
+					Decimal.TryParse(value, out couponCash);
+					var label = comWin.Get<TestStack.White.UIItems.Label> (SearchCriteria.ByAutomationId (Variables.BalanceDueLabelId)).Name;
 					var index = label.IndexOf("$");
 					label = label.Remove(index, 1);
-					double actCash;
-					Double.TryParse (label, out actCash);
+					decimal actCash;
+					Decimal.TryParse (label, out actCash);
 					if (couponCash > actCash){
-						Logger("<td><font color=\"red\">ERROR: Entered amount more than balance amount</font></td></tr>");
-						SetFail(true);
+						Log.Error("Entered amount more than balance amount", true);
 						return comWin;
 					}
 					else
 						EnterAmount(comWin, value);
 				}
 
-				var tenderOtherButton = comWin.Get<TestStack.White.UIItems.Button> (SearchCriteria.ByAutomationId ("TenderOtherButton"));
+				var tenderOtherButton = comWin.Get<TestStack.White.UIItems.Button> (SearchCriteria.ByAutomationId (Variables.TenderOtherButtonId));
 				tenderOtherButton.Click ();
 				Thread.Sleep (2000);
 				return comWin;
 			}
 
 			catch (Exception e){
-				Logger ("<td><font color=\"red\">ERROR: " + e + "</font></td></tr>");
-				SetFail (true);
+				Log.Error(e.ToString(), true);
 				return comWin;
 			}
 		}

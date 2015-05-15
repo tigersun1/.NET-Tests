@@ -1,21 +1,10 @@
 ﻿using System;
-using System.Windows;
 using System.Windows.Automation;
-using System.Windows.Forms;
 using System.Diagnostics;
-using System.ComponentModel;
-using System.Reflection;
 using System.Threading;
-using System.IO; 
-using TestStack;
-using TestStack.White.Recording;
 using TestStack.White.UIItems.WindowItems;
 using TestStack.White.UIItems;
-using TestStack.White.UIItems.MenuItems;
 using TestStack.White.UIItems.Finders;
-using TestStack.White.UIItems.TreeItems;
-using TestStack.White.UIItems.WindowStripControls;
-using System.Collections.Generic;
 
 namespace comcash
 {
@@ -23,20 +12,20 @@ namespace comcash
 	{
 		public TestStack.White.Application Return (TestStack.White.Application comcash, string args)
 		{
-			Window win = comcash.GetWindow(SearchCriteria.ByAutomationId("Window"), TestStack.White.Factory.InitializeOption.NoCache);
+			Window win = comcash.GetWindow(SearchCriteria.ByAutomationId(Variables.MainWindowId), TestStack.White.Factory.InitializeOption.NoCache);
 
 			try{
-				var adminButton = win.Get<TestStack.White.UIItems.RadioButton>(SearchCriteria.ByAutomationId("AdminNavButton"));
+				var adminButton = win.Get<TestStack.White.UIItems.RadioButton>(SearchCriteria.ByAutomationId(Variables.AdminNavButtonId));
 				Thread.Sleep(500);
 				adminButton.Click();
 				Thread.Sleep(1000);
 
-				var journalButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId("JournalButton"));
+				var journalButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId(Variables.JournalButtonId));
 				Thread.Sleep(500);
 				journalButton.Click();
 				Thread.Sleep(1000);
 
-				var ListBox = win.Get<TestStack.White.UIItems.ListBoxItems.ListBox>(SearchCriteria.ByAutomationId("JournalListBox"));
+				var ListBox = win.Get<TestStack.White.UIItems.ListBoxItems.ListBox>(SearchCriteria.ByAutomationId(Variables.JournalListBoxId));
 
 				var stopWatch = new Stopwatch();
 				stopWatch.Start();
@@ -44,8 +33,7 @@ namespace comcash
 					if (ListBox.Enabled)						
 						break;
 					if(stopWatch.ElapsedMilliseconds > 250000){
-						Logger("<td><font color=\"red\">ERROR: Can't get list of transactions</font></td></tr>");
-						SetFail(true);
+						Log.Error("Can't get list of transactions", true);
 						return comcash;
 					}
 				}
@@ -55,27 +43,25 @@ namespace comcash
 				sel.Select();
 
 				if (args.Contains("void")){
-					var voidButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByText("Void"));
+					var voidButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByText(Variables.VoidText));
 					Thread.Sleep(500);
 					voidButton.Click();
 					Thread.Sleep(500);
-					var noReceiptButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId("NoReceiptButton"));
+					var noReceiptButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId(Variables.NoReceiptButtonId));
 					noReceiptButton.Click();
 
 					var stopwatch = new Stopwatch();
 					stopwatch.Start();
 					while (stopwatch.ElapsedMilliseconds < 5000){
-						var c = win.Items.Exists(obj=>obj.Name.Contains("Tenders for return"));
+						var c = win.Items.Exists(obj=>obj.Name.Contains(Variables.TendersForReturnText));
 						if(c){
-							var ReturnWindow = win.MdiChild(SearchCriteria.ByText("ReturnPaymentWindow"));
-							var ContButton = ReturnWindow.Get <TestStack.White.UIItems.Button> (SearchCriteria.ByAutomationId("ContinueButton"));
+							var ReturnWindow = win.MdiChild(SearchCriteria.ByText(Variables.ReturnPaymentWindowId));
+							var ContButton = ReturnWindow.Get <TestStack.White.UIItems.Button> (SearchCriteria.ByAutomationId(Variables.ContinueButtonId));
 							ContButton.Click();
-
-							//Thread.Sleep(300);
 
 							stopwatch.Restart();
 							while(stopwatch.ElapsedMilliseconds < 6000){
-								var t = win.Items.Exists(obj=>obj.Name.Contains("Tenders for return"));
+								var t = win.Items.Exists(obj=>obj.Name.Contains(Variables.TendersForReturnText));
 								if (!t)
 									break;
 							}
@@ -83,8 +69,7 @@ namespace comcash
 							break;
 						}
 						else if (stopwatch.ElapsedMilliseconds >5000){
-							SetFail(true);
-							Logger("<td><font color=\"red\">ERROR: No Tenders for return window</font></td></tr>");
+							Log.Error("No Tenders for return window", true);
 							return comcash;
 						}
 					}
@@ -92,12 +77,12 @@ namespace comcash
 					//Thread.Sleep(500);
 
 					AcceptPayment(win);
-					checkResponse("/sale/void");
+					Fiddler.checkResponse("/sale/void");
 					ClickOnHomeButton(win);
 					return comcash;
 
 				} else{
-					var returnButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByText("Return"));
+					var returnButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByText(Variables.ReturnText));
 					Thread.Sleep(500);
 					returnButton.Click();
 					Thread.Sleep(1000);
@@ -106,19 +91,18 @@ namespace comcash
 					stopwatch.Start();
 					while (stopwatch.ElapsedMilliseconds < 300000) {
 
-						var label = win.Get<TestStack.White.UIItems.Label> (SearchCriteria.ByAutomationId ("ErrorMessageLabel"));
+						var label = win.Get<TestStack.White.UIItems.Label> (SearchCriteria.ByAutomationId (Variables.ErrorMessageLabelId));
 						if (label.Name == "")
 							break;
 						if (stopWatch.ElapsedMilliseconds > 250000){
-							Logger("<td><font color=\"red\">ERROR: Timeout</font></td></tr>");
-							SetFail(true);
+							Log.Error("Timeout", true);
 							return comcash;
 						}
 
 					}
 
 					if (args.Contains("all")){ 
-						var listBox = win.Get<TestStack.White.UIItems.ListBoxItems.ListBox>(SearchCriteria.ByAutomationId("BuyHomeListBox"));
+						var listBox = win.Get<TestStack.White.UIItems.ListBoxItems.ListBox>(SearchCriteria.ByAutomationId(Variables.BuyHomeListBoxId));
 						var list = listBox.Items;
 						foreach (var s in list)
 							ReturnProd(comcash, s.Text.ToLower());
@@ -130,8 +114,7 @@ namespace comcash
 			}
 
 			catch (Exception e){
-				Logger ("<td><font color=\"red\">ERROR: " + e + "</font></td></tr>");
-				SetFail (true);
+				Log.Error(e.ToString(), true);
 				return comcash;
 			}
 		}

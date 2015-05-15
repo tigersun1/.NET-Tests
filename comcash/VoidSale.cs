@@ -3,7 +3,6 @@ using TestStack.White.UIItems.Finders;
 using TestStack.White.UIItems.WindowItems;
 using TestStack.White.UIItems;
 using System.Threading;
-using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace comcash
@@ -14,18 +13,18 @@ namespace comcash
 		{
 			try{
 
-				var win = comcash.GetWindow (SearchCriteria.ByAutomationId ("Window"), TestStack.White.Factory.InitializeOption.NoCache);
-				var CancelButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId("CancelButton"));
+				var win = comcash.GetWindow (SearchCriteria.ByAutomationId (Variables.MainWindowId), TestStack.White.Factory.InitializeOption.NoCache);
+				var CancelButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId(Variables.CancelButtonId));
 				CancelButton.Click();
 				Thread.Sleep(1500);
 
 				var stopwatch = new Stopwatch();
 				stopwatch.Start();
 				while (stopwatch.ElapsedMilliseconds < 5000){
-					var b = win.Items.Exists(obj=>obj.Name.Contains("Reset"));
+					var b = win.Items.Exists(obj=>obj.Name.Contains(Variables.ResetText));
 					if(b){
-						var DialogWindow = win.MdiChild(SearchCriteria.ByText("DialogWindow"));
-						var YesButton = DialogWindow.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId("ButtonYES"));
+						var DialogWindow = win.MdiChild(SearchCriteria.ByText(Variables.DialogWindowText));
+						var YesButton = DialogWindow.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId(Variables.ButtonYESId));
 						YesButton.Click();
 						Thread.Sleep(300);
 						break;
@@ -35,16 +34,15 @@ namespace comcash
 
 				stopwatch.Restart();
 				while (stopwatch.ElapsedMilliseconds < 300000){
-					var c = win.Items.Exists(obj=>obj.Name.Contains("Tenders for return"));
+					var c = win.Items.Exists(obj=>obj.Name.Contains(Variables.TendersForReturnText));
 					if(c){
-								var ReturnWindow = win.MdiChild(SearchCriteria.ByText("ReturnPaymentWindow"));
-								var ContButton = ReturnWindow.Get <TestStack.White.UIItems.Button> (SearchCriteria.ByAutomationId("ContinueButton"));
+						var ReturnWindow = win.MdiChild(SearchCriteria.ByText(Variables.ReturnPaymentWindowId));
+						var ContButton = ReturnWindow.Get <TestStack.White.UIItems.Button> (SearchCriteria.ByAutomationId(Variables.ContinueButtonId));
 								ContButton.Click();
 								
-								//Thread.Sleep(300);
 								stopwatch.Restart();
 								while(stopwatch.ElapsedMilliseconds < 6000){
-									var t = win.Items.Exists(obj=>obj.Name.Contains("Tenders for return"));
+							var t = win.Items.Exists(obj=>obj.Name.Contains(Variables.TendersForReturnText));
 									if (!t)
 										break;
 								}
@@ -52,15 +50,12 @@ namespace comcash
 								return comcash;
 					}
 				}
-
-
-				SetFail(true);
-				Logger("<td><font color=\"red\">ERROR: No Tenders for return window</font></td></tr>");
+					
+				Log.Error("No Tenders for return window", true);
 				return comcash;
 
 			}catch (Exception e){
-				Logger ("<td><font color=\"red\">ERROR: " + e + "</font></td></tr>");
-				SetFail (true);
+				Log.Error(e.ToString(), true);
 				return comcash;
 			}
 		}

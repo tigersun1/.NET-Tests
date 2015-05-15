@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Threading;
 using TestStack.White.UIItems.WindowItems;
-using TestStack.White.UIItems;
-using TestStack.White.UIItems.Finders;
+
 
 namespace comcash
 {
@@ -20,8 +18,7 @@ namespace comcash
 
 			}
 			catch (Exception e){
-				Logger ("<td><font color=\"red\">ERROR: " + e + "</font></td></tr>");
-				SetFail (true);
+				Log.Error(e.ToString(), true);
 				return comcash;
 			}
 

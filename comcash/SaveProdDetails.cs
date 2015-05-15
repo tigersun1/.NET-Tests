@@ -8,7 +8,7 @@ namespace comcash
 	{
 		public Window SaveProdDetails (Window win)
 		{
-			var saveButton = win.Get<TestStack.White.UIItems.Button> (SearchCriteria.ByAutomationId ("SaveProductDetailsButton"));
+			var saveButton = win.Get<TestStack.White.UIItems.Button> (SearchCriteria.ByAutomationId (Variables.SaveProductDetailsButtonId));
 			saveButton.Click();
 			Thread.Sleep(1000);
 			return win;

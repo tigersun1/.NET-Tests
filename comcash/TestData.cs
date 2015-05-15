@@ -1,124 +1,45 @@
 ﻿using System;
-using System.Windows;
-using System.Windows.Automation;
-using System.Windows.Forms;
-using System.Diagnostics;
-using System.ComponentModel;
-using System.Reflection;
 using System.Threading;
 using System.IO; 
-using TestStack;
-using TestStack.White.Recording;
 using TestStack.White.UIItems.WindowItems;
 using TestStack.White.UIItems;
-using TestStack.White.UIItems.MenuItems;
 using TestStack.White.UIItems.Finders;
-using TestStack.White.UIItems.TreeItems;
-using TestStack.White.UIItems.WindowStripControls;
-using System.Collections.Generic;
-using System.Net;
+
 
 
 namespace comcash
 {
     partial class TestData
 	{
-
-		private bool Fail; 
-		public int Errors;
-		public int SessionErrors;
-		private bool isKilled;
-
-		private string TestCasesPath;
-		private string folderPath;
-		static string partPath;
-		private string LogPath;
-		private string FiddlerPath = @"C:\Program Files (x86)\Fiddler2";
-		private string listenerPath;
-		private string serverName;
-		private string listenerPathForFiddler;
-		string appPath;
+	 
 		private int Replay;
 		private int replayPoint;
-		private bool connectStatus;
 
 		public TestData(){
-			Fail = false;
-			Errors = 0;
-			SessionErrors = 0;
-			isKilled = false;
-			connectStatus = true;
 			Replay = 0;
-
-			folderPath = Path.GetDirectoryName (Assembly.GetEntryAssembly ().Location);
-			listenerPath = folderPath + @"\listener.txt";
-			if (listenerPath.Contains (" ")) {
-				listenerPathForFiddler = "\"" + listenerPath + "\"";
-			} else
-				listenerPathForFiddler = listenerPath;
-			appPath = folderPath + @"\Comcash POS Application.exe";
-
-//test config settings
-
-			if (!File.Exists (folderPath + @"\testconfig.txt")){
-				var write = new StreamWriter (folderPath + @"\testconfig.txt", true);
-				write.WriteLine ("Log path: " + folderPath);
-				write.WriteLine ("Cases path: ");
-				write.WriteLine ("Fiddler path: " + FiddlerPath);
-				write.WriteLine ("Server name: ");
-				write.Close();
-			} 
-
-			string[] lines = File.ReadAllLines (folderPath + @"\testconfig.txt");
-			foreach (string s in lines) {
-				if (s.ToLower ().StartsWith ("log")) {
-					string x = s.Substring (s.IndexOf (':') + 1);
-					x = x.Trim ();
-					if (String.IsNullOrEmpty (x))
-						x = folderPath;
-					partPath = Path.Combine (x, "Testlog-" + DateTime.Now.ToString("d"));
-					LogPath = Path.Combine(partPath, "Testlog.html");
-				} else if (s.ToLower ().StartsWith ("cases")) {
-					string x = s.Substring (s.IndexOf (':') + 1);
-					x = x.Trim ();
-					if (String.IsNullOrEmpty (x)) {
-						messBox ("ERROR: No test cases path in the config file");
-						Environment.Exit (1);
-					} else
-						TestCasesPath = x;
-				} else if (s.ToLower ().StartsWith ("fiddler")) {
-					string x = s.Substring (s.LastIndexOf (':') + 1);
-					x = x.Trim ();
-					if (!String.IsNullOrEmpty (x))
-						FiddlerPath = x;
-				} else if (s.ToLower ().StartsWith ("server")) {
-					string x = s.Substring (s.LastIndexOf (':') + 1);
-					x = x.Trim ();
-					if (String.IsNullOrEmpty (x)) {
-						messBox ("ERROR: No server name in config file");
-						Environment.Exit (1);
-					} else
-						serverName = x;
-					if (!PingInternet()) {
-						messBox ("ERROR: Server is not available or incorrect server name in config");
-						Environment.Exit (1);
-					}
-				}
-			} 
 				
-			Fiddler ("\"launch " + listenerPathForFiddler + " " + serverName + " " + partPath +"\"");
-		}
+			if (String.IsNullOrEmpty (ConfigTest.TestCasesPath)) {
+				messBox ("ERROR: No test cases path in the config file");
+				Environment.Exit (1);
+			} else if (String.IsNullOrEmpty (ConfigTest.FiddlerPath)) {
+				messBox ("ERROR: No fiddler path in the config file");
+				Environment.Exit (1);
+			} else if (String.IsNullOrEmpty (ConfigTest.serverName) || !Inet.PingInternet()) {
+				messBox ("ERROR: Server is not available or incorrect server name in config");
+				Environment.Exit (1);
+			}  
 
-//test config settings END
+			Fiddler.FiddlerCommand ("\"launch " + ConfigTest.listenerPathForFiddler + " " + ConfigTest.serverName + " " + ConfigTest.partPath +"\"");
+		}
+			
 
 		public void ErrorEmptyArgument()
 		{
-			Logger ("<td><font color=\"red\">ERROR: Empty argument</font></td></tr>");
-			SetFail (true);
+			Log.Error("Empty argument",false);
 		}
 
 		public void deleteListener(){
-			File.Delete (listenerPath);
+			File.Delete (ConfigTest.listenerPath);
 		}
 
 		public int getReplayPoint(){
@@ -136,34 +57,12 @@ namespace comcash
 		public void setReplay(int arg){
 			Replay = arg;
 		}
-
-		public void setKilled(bool n){
-			isKilled = n;
-		}
-
-		public bool getKilled(){
-			return isKilled;
-		}
-
-		public void SetFail (bool x)
-		{
-			Fail = x;
-			if (Fail) {
-				Errors++;
-				Capture ();
-			}
-		}
-
-		public bool GetFail()
-		{
-			return Fail;
-		}
 			
 
 		public void EnterAmount(Window x, string amount){
 
 			try{
-				var field = x.Get<TestStack.White.UIItems.TextBox> (SearchCriteria.ByAutomationId ("CalculatorTextBox"));
+				var field = x.Get<TestStack.White.UIItems.TextBox> (SearchCriteria.ByAutomationId (Variables.CalculatorTextBoxId));
 				field.BulkText = "";
 			    field.Enter (amount);
 			    x.WaitWhileBusy ();
@@ -171,9 +70,8 @@ namespace comcash
 			 
 			}
 
-			catch (Exception e){
-				Logger ("<td><font color=\"red\">ERROR: " + e + "</font></td></tr>");
-				SetFail (true);
+			catch (Exception e){		
+				Log.Error(e.ToString(), true);
 				return;
 			}
 			 
@@ -202,12 +100,12 @@ namespace comcash
 
 		public string[] GetTestCases()
 		{
-			if (!Directory.Exists(TestCasesPath)) {
+			if (!Directory.Exists(ConfigTest.TestCasesPath)) {
 				messBox("ERROR: Incorrect test cases path");
-				System.Environment.Exit(1);
+				Environment.Exit(1);
 			}
 
-			string[] x = Directory.GetFiles (TestCasesPath, "*.txt", SearchOption.AllDirectories);
+			string[] x = Directory.GetFiles (ConfigTest.TestCasesPath, "*.txt", SearchOption.AllDirectories);
 			return x;
 
 		}

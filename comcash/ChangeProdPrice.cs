@@ -15,7 +15,7 @@ namespace comcash
 				var val = str[1].Trim().ToLower();
 
 				var win = OpenProduct (comcash, prod);
-				var Button = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId("ChangeProductPriceButton"));
+				var Button = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId(Variables.ChangeProductPriceButtonId));
 				Button.Click();
 				Thread.Sleep(300);
 				EnterAmount(win, val);
@@ -24,8 +24,7 @@ namespace comcash
 				return comcash;
 
 			} catch (Exception e){
-				Logger ("<td><font color=\"red\">ERROR: " + e + "</font></td></tr>");
-				SetFail (true);
+				Log.Error(e.ToString(), true);
 				return comcash;
 			}
 

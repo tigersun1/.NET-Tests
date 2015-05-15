@@ -12,27 +12,25 @@ namespace comcash
 
 			try{
 
-				var win = comcash.GetWindow(SearchCriteria.ByAutomationId("Window"), TestStack.White.Factory.InitializeOption.NoCache);
+				var win = comcash.GetWindow(SearchCriteria.ByAutomationId(Variables.MainWindowId), TestStack.White.Factory.InitializeOption.NoCache);
 				ClickOnHomeButton(win);
 				EnterAmount(win, arg);
 
-				var DiscountButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId("TotalDiscountButton"));
+				var DiscountButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId(Variables.TotalDiscountButtonId));
 				DiscountButton.Click();
 				Thread.Sleep(300);
 
-				var label = win.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId("ErrorMessageLabel"));
+				var label = win.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId(Variables.ErrorMessageLabelId));
 				if(!label.IsOffScreen){
 					var str = label.Text;
-					Logger ("<td><font color=\"red\">ERROR: " + str + "</font></td></tr>");
-					SetFail (true);
+					Log.Error(str, true);
 					return comcash;
 				}
 
 				return comcash;
 				
 			}catch (Exception e){
-				Logger ("<td><font color=\"red\">ERROR: " + e + "</font></td></tr>");
-				SetFail (true);
+				Log.Error(e.ToString(), true);
 				return comcash;
 			}
 		}

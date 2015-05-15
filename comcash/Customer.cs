@@ -8,16 +8,16 @@ using System.Windows.Automation;
 
 namespace comcash
 {
-	partial class TestData
+	static public class Customer
 	{
-		public TestStack.White.Application AddCustomer( TestStack.White.Application comcash, string customer){
+		static public TestStack.White.Application AddCustomer( TestStack.White.Application comcash, string customer){
 
 			if (!ConfigTest.connectStatus || !Inet.PingInternet()) {
 				Log.Error("Can't add customer, no internet connection", false);
 				return comcash;
 			}
 
-			Window win = comcash.GetWindow(SearchCriteria.ByAutomationId(Variables.MainWindowId),TestStack.White.Factory.InitializeOption.NoCache);
+			var win = ConfigTest.getWindow (comcash);
 
 
 			try{
@@ -29,8 +29,8 @@ namespace comcash
 				}
 
 				CustButton.Click ();
-			
-				Thread.Sleep (1000);
+
+				win.WaitWhileBusy();
 
 				var searchField = win.Get<TestStack.White.UIItems.TextBox> (SearchCriteria.ByAutomationId (Variables.SearchCustomerTextBoxId));
 				var searchBut = win.Get<TestStack.White.UIItems.Button> (SearchCriteria.ByAutomationId (Variables.SearchCustomerButtonId));
@@ -43,24 +43,17 @@ namespace comcash
 				stopwatch.Start();
 
 				for (int i = 0; ; i++) {
-					var errlabel = win.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId(Variables.ErrorMessageLabelId));
 					if (stopwatch.ElapsedMilliseconds > 120000) {
 						Log.Error("POS hangs", true);
 						return comcash;
 					}
-					if (!errlabel.Name.StartsWith("Operation is")){
+					if (searchBut.Enabled){
 						break;
 					}
 				}
 
 				if (!Fiddler.checkResponse("customers"))
 					return comcash;
-
-				var label = win.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId("CustomerNotFoundLabel"));
-				if (!label.IsOffScreen){
-					Log.Error("Customer Not Found", true);
-					return comcash;
-				}
 
 				var listBox = win.Get<TestStack.White.UIItems.ListBoxItems.ListBox> (SearchCriteria.ByAutomationId(Variables.CustomersListBoxId));
 				var item = listBox.AutomationElement.FindFirst (TreeScope.Descendants, new PropertyCondition (AutomationElement.ClassNameProperty, Variables.ListBoxItemName));
@@ -72,7 +65,7 @@ namespace comcash
 
 				InvokePattern patt = (InvokePattern)continueButton.GetCurrentPattern (InvokePattern.Pattern);
 				patt.Invoke ();
-				Thread.Sleep(1000);
+				win.WaitWhileBusy();
 				Fiddler.checkResponse("customer/loyaltyproducts");
 				return comcash;
 			}

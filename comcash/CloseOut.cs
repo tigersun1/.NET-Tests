@@ -13,12 +13,12 @@ namespace comcash
 		{
 			try{
 
-				var win = comcash.GetWindow(SearchCriteria.ByAutomationId("Window"), TestStack.White.Factory.InitializeOption.NoCache);
-				var adminButton = win.Get<TestStack.White.UIItems.RadioButton>(SearchCriteria.ByAutomationId("AdminNavButton"));
+				var win = comcash.GetWindow(SearchCriteria.ByAutomationId(Variables.MainWindowId), TestStack.White.Factory.InitializeOption.NoCache);
+				var adminButton = win.Get<TestStack.White.UIItems.RadioButton>(SearchCriteria.ByAutomationId(Variables.AdminNavButtonId));
 				adminButton.Click();
 				Thread.Sleep(1000);
 
-				var CloseOutButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByText("Close Out"));
+				var CloseOutButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByText(Variables.CloseOutText));
 				CloseOutButton.Click();
 				Thread.Sleep(300);
 
@@ -26,20 +26,19 @@ namespace comcash
 				stopwatch.Start();
 
 				while (stopwatch.ElapsedMilliseconds < 300000) {
-					var label = win.Get<TestStack.White.UIItems.Label> (SearchCriteria.ByAutomationId ("ErrorMessageLabel"));
+					var label = win.Get<TestStack.White.UIItems.Label> (SearchCriteria.ByAutomationId (Variables.ErrorMessageLabelId));
 					if (label.IsOffScreen){
-						checkResponse("closeout/get");
-						var SubmitButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId("SubmitCloseOutReport"));
+						Fiddler.checkResponse("closeout/get");
+						var SubmitButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId(Variables.SubmitCloseOutReportId));
 						SubmitButton.Click();
 						AcceptPayment(win);
-						checkResponse("closeout/submit");
+						Fiddler.checkResponse("closeout/submit");
 						return comcash;
 					} else if (label.Name == "" | label.Name.StartsWith("Operation is"))
 						continue; 
 					else 
 					{
-						Logger("<td><font color=\"red\">ERROR: " + label.Name + "</font></td></tr>");
-						SetFail(true);
+						Log.Error(label.Name, true);
 						return comcash;
 					}
 				}
@@ -47,8 +46,7 @@ namespace comcash
 				return comcash;
 
 			}catch (Exception e){
-				Logger ("<td><font color=\"red\">ERROR: " + e + "</font></td></tr>");
-				SetFail (true);
+				Log.Error(e.ToString(), true);
 				return comcash;
 			}
 		}

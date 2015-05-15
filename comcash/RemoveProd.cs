@@ -13,14 +13,13 @@ namespace comcash
 			try{
 
 				var win = OpenProduct(comcash, prod);
-				var Button = win.Get<TestStack.White.UIItems.Button> (SearchCriteria.ByAutomationId("RemoveProductButton"));
+				var Button = win.Get<TestStack.White.UIItems.Button> (SearchCriteria.ByAutomationId(Variables.RemoveProductButtonId));
 				Button.Click();
 				Thread.Sleep(300);
 				return comcash;
 
 			} catch (Exception e){
-				Logger ("<td><font color=\"red\">ERROR: " + e + "</font></td></tr>");
-				SetFail (true);
+				Log.Error(e.ToString(), true);
 				return comcash;
 			}
 		}

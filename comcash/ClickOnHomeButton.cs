@@ -10,13 +10,12 @@ namespace comcash
 		public void ClickOnHomeButton (Window win)
 		{
 			try{
-				var homeButt = win.Get<TestStack.White.UIItems.RadioButton> (SearchCriteria.ByAutomationId ("HomeNavButton"));
+				var homeButt = win.Get<TestStack.White.UIItems.RadioButton> (SearchCriteria.ByAutomationId (Variables.HomeNavButtonId));
 				homeButt.Click();
 				Thread.Sleep(300);
 
 			}catch (Exception e){
-				Logger ("<td><font color=\"red\">ERROR: " + e + "</font></td></tr>");
-				SetFail (true);
+				Log.Error(e.ToString(), true);
 				return;
 			}
 
