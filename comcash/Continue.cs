@@ -9,13 +9,13 @@ namespace comcash
 		{
 			try{
 				var win = comcash.GetWindow(SearchCriteria.ByAutomationId(Variables.MainWindowId), TestStack.White.Factory.InitializeOption.NoCache);
-				ClickOnHomeButton(win);
+				Payments.ClickOnHomeButton(win);
 				var ContButt = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId(Variables.ContinueSaleButtonId));
 				ContButt.Click();
 				var noReceiptButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId(Variables.NoReceiptButtonId));
 				noReceiptButton.Click();
 
-				AcceptPayment(win);
+				ConfigTest.AcceptPayment(win);
 				Fiddler.checkResponse("return");
 
 				return comcash;

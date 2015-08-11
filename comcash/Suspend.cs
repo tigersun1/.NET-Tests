@@ -17,17 +17,15 @@ namespace comcash
 				var totalLabel = win.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId(Variables.TotalLabelId));
 				var balanceLabel = win.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId(Variables.BalanceDueLabelId));
 
-				var totalLabelstring = totalLabel.Name;
-				var firstInd = totalLabelstring.IndexOf("$");
-				totalLabelstring = totalLabelstring.Remove(firstInd,1);
-				decimal total;
-				Decimal.TryParse(totalLabelstring, out total);
+
+				var total = ConfigTest.ConvertTotalLabel(totalLabel.Name);
 
 				var balanceLbelstring = balanceLabel.Name;
 				var secondInd = balanceLbelstring.IndexOf("$");
 				balanceLbelstring = balanceLbelstring.Remove(secondInd,1);
 				decimal balance;
 				Decimal.TryParse(balanceLbelstring, out balance);
+
 
 				Thread.Sleep (500);
 				suspendButton.Click ();
@@ -39,7 +37,7 @@ namespace comcash
 					Thread.Sleep(300);
 				}
 
-				AcceptPayment (win);
+				ConfigTest.AcceptPayment (win);
 				Fiddler.checkResponse("sale/suspend");
 
 				return comcash;

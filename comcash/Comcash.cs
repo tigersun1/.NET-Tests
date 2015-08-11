@@ -9,36 +9,71 @@ class Start
 
 	static void Main()
 	{
-		Fiddler.RunFiddler ();
-		var newTest = new TestData ();
-		if (!newTest.messBox ("Start Test Execution?")) 
+			Fiddler.RunFiddler ();
+			if (!ConfigTest.messBox ("Start Test Execution?")) 
 			return;
 
-		//Counting Test Cases
-		string[] TestCases = newTest.GetTestCases ();
-		if (TestCases.Length == 0) {
-			newTest.messBox ("ERROR: Can't find Test Cases");
-			Log.Error("Can't find Test Cases", false);
-			Environment.Exit(1);
-		}
+			//Counting Test Cases
+			string[] TestCases = ConfigTest.GetTestCases ();
+			if (TestCases.Length == 0) {
+				ConfigTest.messBox ("ERROR: Can't find Test Cases");
+				Log.Error("Can't find Test Cases", false);
+				Environment.Exit(1);
+			}
 				
-		Log.Info("Test Execution Started");
+			Log.Info("Test Execution Started");
 
-		//app initialization
-		TestStack.White.Application app;
-		app = newTest.Launch ();
-		if(Log.getFail()){
-			app.Close ();
-			ConfigTest.setKilled (true);
-		}
+			//app initialization
+			TestStack.White.Application app;
+			app = ConfigTest.Launch ();
+			if(Log.getFail()){
+				app.Close ();
+				ConfigTest.setKilled (true);
+			}
+
+		
+//			int caunter = 0;
+//			DateTime stop = new DateTime (2015, 6, 22, 10, 0, 0);
+//			LoadTests Test = new LoadTests (app);
+//			app = newTest.LogIn (app, "7777");
+//
+//			app = newTest.CloseOut (app);
+//
+//			app = Customer.AddCustomer (app, "john");
+//			app = Products.AddProd (app, "cedar");
+//			app = Payments.PayByTender (app, "ar, 700");
+//			app = Payments.PayByTender (app, "gift, 12345qwert");
+//			caunter++;
+//
+//			Inet.Internet ("off");
+//			for (int x = 1; x < 3; x++) {
+//				Test.Prod ();
+//				Payments.PayByCash (app, "");
+//				caunter++;
+//			}
+//			app = newTest.LogOut (app);
+//			Inet.Internet ("on");
+//			app = newTest.LogIn (app, "7777");
+//
+//			for (int x = 1; x < 500; ) {
+//				Test.Prod ();
+//				Test.Tenders ();
+//				caunter++;
+//				if (DateTime.Compare (DateTime.Now, stop) > 0)
+//					break;
+//			}
+//
+//			newTest.CloseOut (app);
+//			Log.Info ("Sales = " + caunter.ToString ());
+
 
 		//Parsing Test Cases and perform them
 		for (int i = 0; i < TestCases.Length; i++) {
 
-			string[] valueTestCases = newTest.ParseTS (TestCases [i]);
+				string[] valueTestCases = ConfigTest.ParseTS (TestCases [i]);
 
 			if (ConfigTest.getKilled()) {
-				app = newTest.Launch ();
+				app = ConfigTest.Launch ();
 				ConfigTest.setKilled (true);
 				if (Log.getFail()){ 
 					app.Close ();
@@ -64,66 +99,51 @@ class Start
 
 
 
-				string [] use = newTest.GetArgument (valueTestCases [x]);
+					string [] use = ConfigTest.GetArgument (valueTestCases [x]);
 				string command = use [0];
 				string arg = use [1];
 
 					if (command == "replay") {
 						if (arg == "") {
-							newTest.ErrorEmptyArgument ();
+							ConfigTest.ErrorEmptyArgument ();
 							continue;
 						}
 						int val = int.Parse (arg);
-						newTest.setReplay (val);
-						newTest.setReplayPoint (x);
+						ConfigTest.setReplay (val);
+						ConfigTest.setReplayPoint (x);
 						continue;
 					} else if (command == "endreplay") {
-						newTest.setReplay (newTest.getReplay () - 1);
-						if (newTest.getReplay () > 0) {
-							x = newTest.getReplayPoint ();
+						ConfigTest.setReplay (ConfigTest.getReplay () - 1);
+						if (ConfigTest.getReplay () > 0) {
+							x = ConfigTest.getReplayPoint ();
 							continue;
 						} else
 							continue;
 					} else if (command == "login") {
 						if (arg == "")
-							newTest.ErrorEmptyArgument ();
+							ConfigTest.ErrorEmptyArgument ();
 						else
-							app = newTest.LogIn (app, arg);
+							app = LogInOut.LogIn (app, arg);
 						continue;
 					} else if (command == "logout") {
-						app = newTest.LogOut (app);
+						app = LogInOut.LogOut (app);
 						continue;
 					} else if (command == "addprod") {
 						if (arg == "")
-							newTest.ErrorEmptyArgument ();
+							ConfigTest.ErrorEmptyArgument ();
 						else
-							app = newTest.AddProd (app, arg);
+							app = Product.AddProd (app, arg);
 						continue;
 					} else if (command == "paycash") {
-						//app = newTest.payByCash (app, arg);
 						app = Payments.PayByCash (app, arg);
 						continue;
 					} else if (command == "paycard") {
-						//app = newTest.payByCard (app, arg);
 						app = Payments.PayByCard (app, arg);
-						continue;
-					} else if (command == "paycoupon") {
-						app = newTest.payByCoupon (app, arg);
-						continue;
-					} else if (command == "payar") {
-						app = newTest.payByAR (app, arg);
-						continue;
-					} else if (command == "paystore") {
-						app = newTest.payByCoupon (app, arg);
-						continue;
-					} else if (command == "paygift") {
-						app = newTest.payByGift (app, arg);
 						continue;
 					} else if (command == "addcustomer") {
 						if (arg == "")
-							newTest.ErrorEmptyArgument ();
+							ConfigTest.ErrorEmptyArgument ();
 						else
-							//app = newTest.AddCustomer (app, arg);
 							app = Customer.AddCustomer(app, arg);
 						continue;
 					} else if (command == "internet") {
@@ -131,103 +151,103 @@ class Start
 						continue;
 					} else if (command == "addmod") {
 						if (arg == "")
-							newTest.ErrorEmptyArgument ();
+							ConfigTest.ErrorEmptyArgument ();
 						else
-							app = newTest.addModifiers (app, arg);
+							app = Product.addModifiers (app, arg);
 						continue;
 					} else if (command == "suspend") {
-						app = newTest.Suspend (app);
+						app = Suspends.Suspend (app);
 						continue;
 					} else if (command == "return") {
-						app = newTest.Return (app, arg);
+						app = AdminTab.Return (app, arg);
 						continue;
 					} else if (command == "recall") {
-						app = newTest.recallSuspend (app, arg);
+						app = Suspends.recallSuspend (app, arg);
 						continue;
 					} else if (command == "checkresp") {
 						Fiddler.checkResponse (arg);
 						continue;
 					} else if (command == "notax") {
 						if (arg == "")
-							newTest.ErrorEmptyArgument ();
+							ConfigTest.ErrorEmptyArgument ();
 						else
-							app = newTest.NoTax (app, arg);
+							app = Product.NoTax (app, arg);
 						continue;
 					} else if (command == "removeprod") {
 						if (arg == "")
-							newTest.ErrorEmptyArgument ();
+							ConfigTest.ErrorEmptyArgument ();
 						else
-							app = newTest.RemoveProd (app, arg);
+							app = Product.RemoveProd (app, arg);
 						continue;
 					} else if (command == "prodprice") {
 						if (arg == "")
-							newTest.ErrorEmptyArgument ();
+							ConfigTest.ErrorEmptyArgument ();
 						else
-							app = newTest.ChangeProdPrice (app, arg);
+							app = Product.ChangeProdPrice (app, arg);
 						continue;
 					} else if (command == "proddiscount") {
 						if (arg == "")
-							newTest.ErrorEmptyArgument ();
+							ConfigTest.ErrorEmptyArgument ();
 						else
-							app = newTest.SetProdDiscount (app, arg);
+							app = Product.SetProdDiscount (app, arg);
 						continue;
 					} else if (command == "alldiscount") {
 						if (arg == "")
-							newTest.ErrorEmptyArgument ();
+							ConfigTest.ErrorEmptyArgument ();
 						else
-							app = newTest.SetAllDiscount (app, arg);
+							app = Payments.SetAllDiscount (app, arg);
 						continue;
 					} else if (command == "addbyplu") {
 						if (arg == "" || arg.Length > 4)
-							newTest.ErrorEmptyArgument ();
+							ConfigTest.ErrorEmptyArgument ();
 						else
-							app = newTest.PLU (app, arg);
+							app = Product.PLU (app, arg);
 						continue;
 					} else if (command == "checkamount") {
 						if (arg == "")
-							newTest.ErrorEmptyArgument ();
+							ConfigTest.ErrorEmptyArgument ();
 						else
-							app = newTest.CheckAmount (app, arg);
+							app = Payments.CheckAmount (app, arg);
 						continue;
 					} else if (command == "voidsale") {
-						app = newTest.VoidSale (app);
+						app = Payments.VoidSale (app);
 						continue;
 					} else if (command == "closeout") {
-						app = newTest.CloseOut (app);
+						app = AdminTab.CloseOut (app);
 						continue;
 					} else if (command == "simplereturn") {
-						app = newTest.SimpleReturn (app);
+						app = AdminTab.SimpleReturn (app);
 						continue;
 					} else if (command == "continue") {
-						app = newTest.Continue (app);
+						app = AdminTab.Continue (app);
 						continue;
 					} else if (command == "zeroprice") {
 						if (arg == "")
-							newTest.ErrorEmptyArgument ();
+							ConfigTest.ErrorEmptyArgument ();
 						else
-							app = newTest.zeroPrice (app, arg);
+							app = Product.zeroPrice (app, arg);
 						continue;
 					} else if (command == "returnprod") {
 						if (arg == "")
-							newTest.ErrorEmptyArgument ();
+							ConfigTest.ErrorEmptyArgument ();
 						else
-							app = newTest.ReturnProd (app, arg);
+							app = AdminTab.ReturnProd (app, arg);
 						continue;
 					} else if (command == "qty") {
 						if (arg == "") {
-							newTest.ErrorEmptyArgument ();
+							ConfigTest.ErrorEmptyArgument ();
 							continue;
 						}
 						var str = arg.Split (new Char [] { ',' });
 						var prod = str [0].Trim ().ToLower ();
 						var val = str [1].Trim ().ToLower ();
-						app = newTest.AddQTY (app, prod, val);
+						app = Product.AddQTY (app, prod, val);
 						continue;
 					} else if (command == "qt") {
 						if (arg == "")
-							newTest.ErrorEmptyArgument ();
+							ConfigTest.ErrorEmptyArgument ();
 						else
-							app = newTest.AddQTYbyButton (app, arg);
+							app = Product.AddQTYbyButton (app, arg);
 						continue;
 					} else if (command == "paytender") {
 						app = Payments.PayByTender (app, arg);
@@ -256,8 +276,8 @@ class Start
 			}
 		Log.Info("Errors: " + Log.Errors);
 		Fiddler.CloseFiddler ();
-		newTest.messBox ("Test Execution end \rErrors: " + Log.Errors);
-		newTest.deleteListener ();
+			ConfigTest.messBox ("Test Execution end \rErrors: " + Log.Errors);
+			ConfigTest.deleteListener ();
 
 		}
 

@@ -15,6 +15,7 @@ namespace comcash
 			FiddlerPath = ConfigTest.FiddlerPath + "\\Fiddler.exe";
 		}
 
+		//runs fiddler.exe
 		static public void RunFiddler(){
 			try{
 
@@ -23,11 +24,14 @@ namespace comcash
 				win.DisplayState = DisplayState.Minimized;
 				app.WaitWhileBusy();
 
+				FiddlerCommand ("\"launch " + ConfigTest.listenerPathForFiddler + " " + ConfigTest.serverName + " " + ConfigTest.partPath + "\"");
+
 			} catch (Exception e){
 				Log.Error(e.ToString(), true);
 			}
 		}
 
+		//closes fidler.exe
 		static public void CloseFiddler(){
 			try {
 				
@@ -38,6 +42,8 @@ namespace comcash
 			}
 		}
 
+		//sends to fiddler what respponse need to check
+		//arg - name of response
 		static public bool checkResponse (string arg){
 			if (!Inet.PingInternet () || !ConfigTest.connectStatus)
 				return true;
@@ -77,7 +83,6 @@ namespace comcash
 
 		static public void FiddlerCommand(string arg){
 			if (!Directory.Exists(ConfigTest.FiddlerPath)) {
-				//messBox("<td><font color=\"red\">ERROR: Incorrect fiddler path</font></td></tr>");
 				Log.Error("Incorrect fiddler path", false);
 				Environment.Exit(1);
 			}

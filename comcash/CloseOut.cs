@@ -5,6 +5,12 @@ using System.Diagnostics;
 using TestStack.White.UIItems.WindowItems;
 using TestStack.White.UIItems;
 
+using System.IO; 
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Windows.Forms;
+
+
 namespace comcash
 {
 	partial class TestData
@@ -22,6 +28,8 @@ namespace comcash
 				CloseOutButton.Click();
 				Thread.Sleep(300);
 
+
+
 				var stopwatch = new Stopwatch();
 				stopwatch.Start();
 
@@ -30,8 +38,15 @@ namespace comcash
 					if (label.IsOffScreen){
 						Fiddler.checkResponse("closeout/get");
 						var SubmitButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId(Variables.SubmitCloseOutReportId));
+						//Delete
+						var bmpScreenshot = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
+						var gfx = Graphics.FromImage (bmpScreenshot);
+						gfx.CopyFromScreen (Screen.PrimaryScreen.Bounds.X, Screen.PrimaryScreen.Bounds.Y, 0, 0, Screen.PrimaryScreen.Bounds.Size, CopyPixelOperation.SourceCopy);
+						string screenPath = ConfigTest.partPath + @"\Screen.png";
+						bmpScreenshot.Save (screenPath, ImageFormat.Png);
+						//Delete
 						SubmitButton.Click();
-						AcceptPayment(win);
+						ConfigTest.AcceptPayment(win);
 						Fiddler.checkResponse("closeout/submit");
 						return comcash;
 					} else if (label.Name == "" | label.Name.StartsWith("Operation is"))

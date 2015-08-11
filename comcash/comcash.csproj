@@ -7,6 +7,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>comcash</RootNamespace>
     <AssemblyName>comcash</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -17,6 +18,8 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <ConsolePause>false</ConsolePause>
+    <LangVersion>4</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>full</DebugType>
@@ -25,109 +28,49 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <ConsolePause>false</ConsolePause>
+    <LangVersion>4</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="Comcash.cs" />
     <Compile Include="Log_In_Out.cs" />
-    <Compile Include="addCustomer.cs" />
-    <Compile Include="Launch.cs" />
-    <Compile Include="addProduct.cs" />
-    <Compile Include="acceptPayment.cs" />
-    <Compile Include="addModifiers.cs" />
-    <Compile Include="Suspend.cs" />
-    <Compile Include="recallSuspend.cs" />
-    <Compile Include="tenderOthers.cs" />
-    <Compile Include="AddQTY.cs" />
-    <Compile Include="Return.cs" />
-    <Compile Include="ReturnProd.cs" />
-    <Compile Include="MessageBox.cs" />
-    <Compile Include="OpenProduct.cs" />
-    <Compile Include="SaveProdDetails.cs" />
-    <Compile Include="NoTax.cs" />
-    <Compile Include="RemoveProd.cs" />
-    <Compile Include="ChangeProdPrice.cs" />
-    <Compile Include="SetProdDiscount.cs" />
-    <Compile Include="ClickOnHomeButton.cs" />
-    <Compile Include="SetAllDiscount.cs" />
-    <Compile Include="PLU.cs" />
-    <Compile Include="CheckAmount.cs" />
-    <Compile Include="VoidSale.cs" />
-    <Compile Include="CloseOut.cs" />
-    <Compile Include="SimpleReturn.cs" />
-    <Compile Include="Continue.cs" />
-    <Compile Include="zeroPrice.cs" />
-    <Compile Include="AddQTYbyButton.cs" />
     <Compile Include="Variables.cs" />
-    <Compile Include="Log.cs" />
     <Compile Include="ConfigTest.cs" />
     <Compile Include="Fiddler.cs" />
     <Compile Include="Inet.cs" />
     <Compile Include="Payments.cs" />
     <Compile Include="Customer.cs" />
+    <Compile Include="Log.cs" />
+    <Compile Include="LoadTests.cs" />
+    <Compile Include="Product.cs" />
+    <Compile Include="Suspends.cs" />
+    <Compile Include="AdminTab.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Presentation" />
     <Reference Include="System.Windows.Input.Manipulations" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
-    <Reference Include="System.Windows.Forms.DataVisualization.Design" />
     <Reference Include="UIAutomationTypes" />
     <Reference Include="UIAutomationClient" />
     <Reference Include="UIAutomationProvider" />
     <Reference Include="UIAutomationClientsideProviders" />
-    <Reference Include="Castle.Core">
-      <HintPath>..\packages\Castle.Core.3.3.0\lib\net40-client\Castle.Core.dll</HintPath>
-    </Reference>
     <Reference Include="TestStack.White">
       <HintPath>..\packages\TestStack.White.0.13.3\lib\net40\TestStack.White.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="WindowsBase" />
-    <Reference Include="System.IO">
-      <HintPath>..\packages\Microsoft.Bcl.1.1.9\lib\net40\System.IO.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime">
-      <HintPath>..\packages\Microsoft.Bcl.1.1.9\lib\net40\System.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Threading.Tasks">
-      <HintPath>..\packages\Microsoft.Bcl.1.1.9\lib\net40\System.Threading.Tasks.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Threading.Tasks">
-      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Threading.Tasks.Extensions.Desktop">
-      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.Desktop.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Threading.Tasks.Extensions">
-      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.dll</HintPath>
-    </Reference>
     <Reference Include="System.Net" />
-    <Reference Include="System.Net.Http">
-      <HintPath>..\packages\Microsoft.Net.Http.2.2.22\lib\net40\System.Net.Http.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Net.Http.Extensions">
-      <HintPath>..\packages\Microsoft.Net.Http.2.2.22\lib\net40\System.Net.Http.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Net.Http.Primitives">
-      <HintPath>..\packages\Microsoft.Net.Http.2.2.22\lib\net40\System.Net.Http.Primitives.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Net.Http.WebRequest">
-      <HintPath>..\packages\Microsoft.Net.Http.2.2.22\lib\net40\System.Net.Http.WebRequest.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net40\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="Zlib.Portable">
       <HintPath>..\packages\Zlib.Portable.1.10.0\lib\portable-net4+sl5+wp8+win8+wpa81+MonoTouch+MonoAndroid\Zlib.Portable.dll</HintPath>
     </Reference>
+    <Reference Include="Castle.Core">
+      <HintPath>..\packages\Castle.Core.3.3.3\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TestData.cs" />
     <None Include="packages.config" />
     <None Include="CustomRules.js" />
   </ItemGroup>

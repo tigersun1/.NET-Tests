@@ -10,6 +10,8 @@ namespace comcash
 {
 	static public class Customer
 	{
+		//asigns customer
+		//comcash - application var, customer - customer name
 		static public TestStack.White.Application AddCustomer( TestStack.White.Application comcash, string customer){
 
 			if (!ConfigTest.connectStatus || !Inet.PingInternet()) {
@@ -66,6 +68,7 @@ namespace comcash
 				InvokePattern patt = (InvokePattern)continueButton.GetCurrentPattern (InvokePattern.Pattern);
 				patt.Invoke ();
 				win.WaitWhileBusy();
+				Thread.Sleep(1000);
 				Fiddler.checkResponse("customer/loyaltyproducts");
 				return comcash;
 			}

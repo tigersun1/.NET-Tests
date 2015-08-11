@@ -9,9 +9,11 @@ using System.Collections.Generic;
 
 namespace comcash
 {
-	partial class TestData
+	public static class LogInOut
 	{
-		public TestStack.White.Application LogIn(TestStack.White.Application comcash, string pin)
+		//logs in
+		//comcash - application var, pin - pin code
+		public static TestStack.White.Application LogIn(TestStack.White.Application comcash, string pin)
 		{
 
 			Window pinWindow = comcash.GetWindow (SearchCriteria.ByAutomationId(Variables.PinWindowId),TestStack.White.Factory.InitializeOption.NoCache);
@@ -61,7 +63,9 @@ namespace comcash
 		}
 
 
-		public TestStack.White.Application LogOut(TestStack.White.Application comcash){
+		//logouts
+		//comcash - application var
+		public static TestStack.White.Application LogOut(TestStack.White.Application comcash){
 
 			Window mainWindow = comcash.GetWindow (SearchCriteria.ByAutomationId(Variables.MainWindowId),TestStack.White.Factory.InitializeOption.NoCache);
 			try{

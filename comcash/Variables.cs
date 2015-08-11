@@ -43,6 +43,7 @@ namespace comcash
 		public const string TenderCashButtonId = "TenderCashButton";
 		public const string CouponText = "Coupon";
 		public const string GiftCardText = "Gift Card";
+		public const string EBTText = "ebt";
 		public const string ApplyBarcodeButtonId = "ApplyBarcodeButton";
 		public const string StoreCreditText = "Store Credit";
 		public const string PLUButtonId = "PluButton";
@@ -72,6 +73,8 @@ namespace comcash
 		public const string CalculatorTextBoxId = "CalculatorTextBox";
 		public const string FiddlerWindow = "frmViewer";
 		public const string BarcodeTextBoxId = "BarcodeTextBox";
+		public const string ReturnButtonId = "ReturnTransactionButton";
+		public const string VoidInReturnButtonId = "VoidTransactionButton";
 	}
 }
 

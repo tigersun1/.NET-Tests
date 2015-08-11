@@ -1,18 +1,57 @@
 ﻿using System;
-using System.Windows.Automation;
-using System.Diagnostics;
 using System.Threading;
-using TestStack.White.UIItems.WindowItems;
 using TestStack.White.UIItems;
 using TestStack.White.UIItems.Finders;
+using TestStack.White.UIItems.WindowItems;
+using System.Windows.Automation;
+using System.Diagnostics;
 
 namespace comcash
 {
-	partial class TestData
+	public static class Suspends
 	{
-		public TestStack.White.Application recallSuspend (TestStack.White.Application comcash, string value)
+
+		//Suspends and partial suspends
+		//comcash - application var
+		public static TestStack.White.Application Suspend (TestStack.White.Application comcash)
 		{
-			Window win = comcash.GetWindow (SearchCriteria.ByAutomationId (Variables.MainWindowId), TestStack.White.Factory.InitializeOption.NoCache);
+			var win = ConfigTest.getWindow(comcash);
+
+			try{
+
+				var suspendButton = win.Get<TestStack.White.UIItems.Button> (SearchCriteria.ByAutomationId (Variables.SuspendButtonId));
+				var totalLabel = win.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId(Variables.TotalLabelId));
+				var total = ConfigTest.ConvertTotalLabel(totalLabel.Name);
+
+				var balance = Payments.getBalanceDue(win);
+
+
+				Thread.Sleep (500);
+				suspendButton.Click ();
+				Thread.Sleep(1000);
+
+				if (total > balance){
+					Payments.NoReceiptButtonClick(win);
+				}
+
+				ConfigTest.AcceptPayment (win);
+				Fiddler.checkResponse("sale/suspend");
+
+				return comcash;
+			}
+
+			catch (Exception e){
+				Log.Error(e.ToString(), true);
+				return comcash;
+			}
+		}
+
+
+		//recalls and voids suspend sales
+		//comcash - application var, value - Void or empty value
+		public static TestStack.White.Application recallSuspend (TestStack.White.Application comcash, string value)
+		{
+			var win = ConfigTest.getWindow(comcash);
 
 			try{
 
@@ -42,7 +81,7 @@ namespace comcash
 				sel.Select();
 
 				if (value.Contains("void")){
-				
+
 					var voidButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId(Variables.VoidSuspendButtonId));
 					Thread.Sleep(500);
 					voidButton.Click();
@@ -55,10 +94,9 @@ namespace comcash
 
 					ConfigTest.AcceptPayment(win);
 
-					var homeButt = win.Get<TestStack.White.UIItems.RadioButton> (SearchCriteria.ByAutomationId (Variables.HomeNavButtonId));
-					homeButt.Click();
-					Thread.Sleep(1000);
+					Payments.ClickOnHomeButton(win);
 				}
+
 				else{
 					var continueButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId(Variables.ContinueSuspendButtonId));
 					Thread.Sleep(500);
@@ -75,6 +113,7 @@ namespace comcash
 			}
 
 		}
+
 	}
 }
 

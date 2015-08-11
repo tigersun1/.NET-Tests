@@ -24,7 +24,7 @@ namespace comcash
 				}
 
 				Thread.Sleep(300);
-				OpenProduct(comcash, prod);
+				Product.OpenProduct(comcash, prod);
 				var saveButton = win.Get<TestStack.White.UIItems.Button> (SearchCriteria.ByAutomationId (Variables.SaveProductDetailsButtonId));
 				if (!saveButton.IsOffScreen){
 					if (qty != null)

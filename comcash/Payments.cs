@@ -11,6 +11,8 @@ namespace comcash
 	public static class Payments
 	{
 		
+		//Enters data in the amount calculator
+		//x - window var, amount - new amount
 		public static void EnterAmount(Window x, string amount){
 
 			try{
@@ -26,6 +28,8 @@ namespace comcash
 		}
 
 
+		//returns BalanceDue in the decimal format
+		//win - window var
 		public static decimal getBalanceDue (Window win){
 			try{
 
@@ -41,8 +45,27 @@ namespace comcash
 				}
 		}
 
+		//returns EBT due in the decimal format
+		//win - windows var
+		public static decimal getEBTDue (Window win){
+			try{
 
+				//string label = win.Get<TestStack.White.UIItems.Label> (SearchCriteria.ByAutomationId (Variables.TotalLabelId)).Name;
+				string label = ConfigTest.returnTotalLabel(win);
+				label = label.Remove(label.IndexOf("$"), label.LastIndexOf("$")+1);
+				label = label.Remove(label.Length-1, 1);
+				decimal actCash;
+				Decimal.TryParse(label, out actCash);
+				return actCash;
 
+			} catch (Exception e){		
+				Log.Error(e.ToString(), true);
+				return 0;
+			}
+		}
+
+		//Clicks on Home button
+		//win - window var
 		public static void ClickOnHomeButton (Window win){
 			try{
 				var homeButt = win.Get<TestStack.White.UIItems.RadioButton> (SearchCriteria.ByAutomationId (Variables.HomeNavButtonId));
@@ -55,6 +78,8 @@ namespace comcash
 		}
 
 
+		//Clicks on NoReceipt button
+		//win - window var
 		public static void NoReceiptButtonClick (Window win){
 			try{
 
@@ -68,6 +93,8 @@ namespace comcash
 		}
 
 
+		//Ends sale - clicks on NoReceipt button and accept payment
+		//win - window var
 		public static void EndSale(Window win){
 			NoReceiptButtonClick(win);
 			ConfigTest.AcceptPayment(win);
@@ -75,6 +102,8 @@ namespace comcash
 		}
 
 
+		//Pays by cash
+		//comcash - application var, payType - cashh amount
 		public static TestStack.White.Application PayByCash (TestStack.White.Application comcash, string payType){
 			try{
 
@@ -104,6 +133,8 @@ namespace comcash
 
 
 
+		//Pays by card
+		//comcash - application var, value - card amount
 		public static TestStack.White.Application PayByCard(TestStack.White.Application comcash, string value){
 			try{
 
@@ -159,6 +190,8 @@ namespace comcash
 		}
 
 
+		//Pays by tenders other
+		//comcash - application var, str - tender type + tender amount
 		static public TestStack.White.Application PayByTender (TestStack.White.Application comcash, string str){
 			try{
 
@@ -185,7 +218,7 @@ namespace comcash
 						Log.Error("Can't pay by " + args[0] + ", no internet connection", false);
 						return comcash;
 					}
-					else if (String.IsNullOrEmpty(args[2])){
+					else if (String.IsNullOrEmpty(args[1])){
 						Log.Error("No gift card barcode in the statement", false);
 						return comcash;
 					}
@@ -194,6 +227,10 @@ namespace comcash
 				
 				case "coupon":
 					args[0] = Variables.CouponText;
+					break;
+
+				case "ebt":
+					args[0] = Variables.EBTText;
 					break;
 
 				case "ar":
@@ -231,7 +268,7 @@ namespace comcash
 						EnterAmount(win, args[2]);
 				}
 
-				else if (!String.IsNullOrEmpty(args[1])){
+				else if (!String.IsNullOrEmpty(args[1]) && args[0] != Variables.GiftCardText){
 					decimal tenderCash;
 					Decimal.TryParse(args[1], out tenderCash);
 					if (tenderCash > getBalanceDue(win)){
@@ -269,6 +306,7 @@ namespace comcash
 					}
 				}
 
+				Thread.Sleep(1000);
 				if (getBalanceDue(win) > 0)
 					return comcash;
 
@@ -276,6 +314,115 @@ namespace comcash
 
 				return comcash;
 				
+			}catch (Exception e){
+				Log.Error(e.ToString(), true);
+				return comcash;
+			}
+		}
+
+
+		//sets sale discount
+		//comcash - application var, arg - discount amount
+		public static TestStack.White.Application SetAllDiscount (TestStack.White.Application comcash, string arg)
+		{
+
+			try{
+
+				var win = ConfigTest.getWindow(comcash);
+				ClickOnHomeButton(win);
+				EnterAmount(win, arg);
+
+				var DiscountButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId(Variables.TotalDiscountButtonId));
+				DiscountButton.Click();
+				Thread.Sleep(300);
+
+				var label = win.Get<TestStack.White.UIItems.Label>(SearchCriteria.ByAutomationId(Variables.ErrorMessageLabelId));
+				if(!label.IsOffScreen){
+					var str = label.Text;
+					Log.Error(str, true);
+					return comcash;
+				}
+
+				return comcash;
+
+			}catch (Exception e){
+				Log.Error(e.ToString(), true);
+				return comcash;
+			}
+		}
+
+
+		//compares BalanceDue expected and actual amounts
+		//comcash - application var, arg - expected amount 
+		public static TestStack.White.Application CheckAmount (TestStack.White.Application comcash, string arg)
+		{
+			try{
+
+				var win = ConfigTest.getWindow(comcash);
+
+				decimal value;
+				Decimal.TryParse(arg, out value);
+				var amount = getBalanceDue(win);
+
+				if (value != amount){
+					Log.Error("actual amount " + amount + " is not equal to expected amount " + value, true);
+					return comcash;
+				}
+
+				return comcash;
+			}catch (Exception e){
+				Log.Error(e.ToString(), true);
+				return comcash;
+			}
+		}
+
+		//cancell sale if some amount were paid
+		//comcash - application var
+		public static TestStack.White.Application VoidSale (TestStack.White.Application comcash)
+		{
+			try{
+
+				var win = ConfigTest.getWindow(comcash);
+				var CancelButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId(Variables.CancelButtonId));
+				CancelButton.Click();
+				Thread.Sleep(1500);
+
+				var stopwatch = new Stopwatch();
+				stopwatch.Start();
+				while (stopwatch.ElapsedMilliseconds < 5000){
+					var b = win.Items.Exists(obj=>obj.Name.Contains(Variables.ResetText));
+					if(b){
+						var DialogWindow = win.MdiChild(SearchCriteria.ByText(Variables.DialogWindowText));
+						var YesButton = DialogWindow.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId(Variables.ButtonYESId));
+						YesButton.Click();
+						Thread.Sleep(300);
+						break;
+					}
+				}
+
+
+				stopwatch.Restart();
+				while (stopwatch.ElapsedMilliseconds < 300000){
+					var c = win.Items.Exists(obj=>obj.Name.Contains(Variables.TendersForReturnText));
+					if(c){
+						var ReturnWindow = win.MdiChild(SearchCriteria.ByText(Variables.ReturnPaymentWindowId));
+						var ContButton = ReturnWindow.Get <TestStack.White.UIItems.Button> (SearchCriteria.ByAutomationId(Variables.ContinueButtonId));
+						ContButton.Click();
+
+						stopwatch.Restart();
+						while(stopwatch.ElapsedMilliseconds < 6000){
+							var t = win.Items.Exists(obj=>obj.Name.Contains(Variables.TendersForReturnText));
+							if (!t)
+								break;
+						}
+
+						return comcash;
+					}
+				}
+
+				Log.Error("No Tenders for return window", true);
+				return comcash;
+
 			}catch (Exception e){
 				Log.Error(e.ToString(), true);
 				return comcash;

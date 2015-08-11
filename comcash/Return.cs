@@ -43,7 +43,7 @@ namespace comcash
 				sel.Select();
 
 				if (args.Contains("void")){
-					var voidButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByText(Variables.VoidText));
+					var voidButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId(Variables.VoidInReturnButtonId));
 					Thread.Sleep(500);
 					voidButton.Click();
 					Thread.Sleep(500);
@@ -76,13 +76,13 @@ namespace comcash
 
 					//Thread.Sleep(500);
 
-					AcceptPayment(win);
+					ConfigTest.AcceptPayment(win);
 					Fiddler.checkResponse("/sale/void");
-					ClickOnHomeButton(win);
+					Payments.ClickOnHomeButton(win);
 					return comcash;
 
 				} else{
-					var returnButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByText(Variables.ReturnText));
+					var returnButton = win.Get<TestStack.White.UIItems.Button>(SearchCriteria.ByAutomationId(Variables.ReturnButtonId));
 					Thread.Sleep(500);
 					returnButton.Click();
 					Thread.Sleep(1000);
